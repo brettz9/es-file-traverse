@@ -13,11 +13,16 @@
     "eslint": "eslint --ext=js,md,html .",
     "lint": "npm run eslint",
     "coverage-badge": "coveradge doc-includes/coverage-badge.svg",
-    "test-badge": "mbg --badge_output doc-includes/tests-badge.svg",
-    "test": "nyc mocha && npm run test-badge && npm run coverage-badge"
+    "test": "echo 'Removing esm cache which seems to blank out istanbul coverage when breaking out early' && rm -Rf node_modules/.cache && nyc mocha --reporter=mocha-badge-generator --reporter-option badge_output=doc-includes/tests-badge.svg --require=esm --require=chai/register-expect && npm run coverage-badge"
   },
   "engines": {
     "node": ">=10.4.0"
+  },
+  "nyc": {
+    "reporter": [
+      "json-summary",
+      "text"
+    ]
   },
   "repository": "https://github.com/brettz9/es-file-traverse",
   "license": "MIT",
@@ -64,6 +69,7 @@
     "license-badger": "^0.11.1",
     "mocha": "^7.1.0",
     "mocha-badge-generator": "^0.5.0",
+    "mocha-multi-reporters": "git+https://github.com/brettz9/mocha-multi-reporters.git#missing-reporter",
     "nyc": "^15.0.0",
     "typescript": "^3.8.3"
   }
