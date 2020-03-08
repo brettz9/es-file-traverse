@@ -27,9 +27,6 @@
 
 ## To-dos
 
-1. Add a CLI (as well as programmatic) API to build a list of files and
-    add that to CLI args to `eslint`:
-    <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
 1. Iterate through files for `require`, `import` (dynamic or static), and maybe
     `define` (`fetch` or `XMLHttpRequest` could be used with `eval` but that
     rule could not be readily used without a lot of complexity). Ensure can

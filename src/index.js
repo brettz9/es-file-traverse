@@ -35,6 +35,10 @@ console.log('defaultKeys', defaultKeys);
 //  track stacks, e.g., to follow dynamic imports in order or when only
 //  needing to check linting on a particular API.
 
+// Add a CLI (as well as programmatic) API to build a list of files and
+// add that to CLI args to `eslint`:
+// https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands
+
 // Could propose this traversal mechanism as a command line option for
 //  eslint itself, esp. if get as a working demo (in place of, or in
 //  addition to, a set of whitelisted files). Could also have an option to give
