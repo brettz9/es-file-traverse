@@ -1,8 +1,12 @@
-# eslint-file-traverse
+# es-file-traverse
 
 **This project is not yet functional!**
 
-# To-dos
+## CLI
+
+![doc-includes/cli.svg](doc-includes/cli.svg)
+
+## To-dos
 
 1. Add a CLI (as well as programmatic) API to build a list of files and
     add that to CLI args to `eslint`:

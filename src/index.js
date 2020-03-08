@@ -1,3 +1,5 @@
+'use strict';
+
 const {parseForESLint} = require('babel-eslint');
 
 /*
@@ -34,8 +36,8 @@ console.log('defaultKeys', defaultKeys);
 //  needing to check linting on a particular API.
 
 // Could propose this traversal mechanism as a command line option for
-//  eslint itself, esp. if get as a working demo (in place of, or in addition to,
-//  a set of whitelisted files). Could also have an option to give
+//  eslint itself, esp. if get as a working demo (in place of, or in
+//  addition to, a set of whitelisted files). Could also have an option to give
 //  an error or report listing files which were not traversed but
 //  within a set of specified files. Could also have a blacklist so that
 //  not end up linting, e.g., `node_modules` (e.g., when linting
@@ -56,13 +58,27 @@ const result = parseForESLint(`
 
 Traverser.traverse(result.ast, {
   enter (node /* , parent */) {
-    console.log('node', node.type);
+    // console.log('node', node.type);
     switch (node.type) {
     case 'ImportDeclaration':
+      // eslint-disable-next-line no-console
       console.log('import declaration', node);
+      break;
+    default:
       break;
     }
   }
   // visitorKeys: []
   // leave (node, parent)
 }, {});
+
+/**
+ * @param {ESFileTraverseOptionDefinitions} config
+ * @returns {string}
+ */
+function traverse (config) {
+  // Todo:
+  return '';
+}
+
+module.exports = traverse;
