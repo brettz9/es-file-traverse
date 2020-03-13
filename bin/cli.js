@@ -18,5 +18,7 @@ if (!optionDefinitions) { // cliBasics handled
 }
 
 (async () => {
-await mainScript(optionDefinitions);
+const filesArr = await mainScript(optionDefinitions);
+// eslint-disable-next-line no-console
+console.log('filesArr', filesArr);
 })();

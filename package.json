@@ -10,6 +10,7 @@
     "cli": "node ./bin/cli.js",
     "help": "node ./bin/cli.js --help",
     "version": "node ./bin/cli.js --version",
+    "cli-example": "npm run cli -- --file=./test/fixtures/main.js",
     "eslint": "eslint --ext=js,md,html .",
     "lint": "npm run eslint",
     "coverage-badge": "coveradge doc-includes/coverage-badge.svg",
@@ -40,7 +41,8 @@
     "babel-eslint": "^10.1.0",
     "command-line-basics": "^0.8.0",
     "eslint": "^6.8.0",
-    "file-fetch": "^1.4.1"
+    "file-fetch": "^1.4.1",
+    "resolve": "^1.15.1"
   },
   "devDependencies": {
     "@mysticatea/eslint-plugin": "^13.0.0",

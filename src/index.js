@@ -1,6 +1,25 @@
 'use strict';
 
+const {dirname} = require('path');
 const {parseForESLint} = require('babel-eslint');
+const _resolve = require('resolve');
+
+const requireResolve = (path, opts = {}) => {
+  // eslint-disable-next-line promise/avoid-new
+  return new Promise((resolve, reject) => {
+    // eslint-disable-next-line promise/prefer-await-to-callbacks
+    _resolve(path, opts, (err, res, pkg) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(res);
+    });
+  });
+};
+
+// eslint-disable-next-line no-shadow
+const fetch = require('file-fetch');
 
 /*
 const defaultKeys = require('eslint-visitor-keys');
@@ -53,36 +72,45 @@ console.log('defaultKeys', defaultKeys);
 //  for ESLint rules
 const Traverser = require('eslint/lib/shared/traverser.js');
 
-const result = parseForESLint(`
-  import './abc.js';
-  require('abc');
-`);
-
-// console.log('result', result.ast);
-
-Traverser.traverse(result.ast, {
-  enter (node /* , parent */) {
-    // console.log('node', node.type);
-    switch (node.type) {
-    case 'ImportDeclaration':
-      // eslint-disable-next-line no-console
-      console.log('import declaration', node);
-      break;
-    default:
-      break;
-    }
-  }
-  // visitorKeys: []
-  // leave (node, parent)
-}, {});
-
 /**
  * @param {ESFileTraverseOptionDefinitions} config
- * @returns {string}
+ * @returns {Promise<string[]>}
  */
-function traverse (config) {
-  // Todo:
-  return '';
+async function traverse ({
+  file,
+  cwd = process.cwd()
+}) {
+  const fullPath = await requireResolve(file, {basedir: cwd});
+  const res = await fetch(fullPath);
+  const text = await res.text();
+
+  const result = parseForESLint(text);
+
+  // console.log('result', result.ast);
+
+  const resolvedArr = [];
+  Traverser.traverse(result.ast, {
+    enter (node /* , parent */) {
+      // console.log('node', node.type);
+      switch (node.type) {
+      case 'ImportDeclaration': {
+        resolvedArr.push(requireResolve(
+          node.source.value, {basedir: dirname(fullPath)}
+        ));
+
+        // // eslint-disable-next-line no-console
+        // console.log('import declaration', node, node.source.value);
+        break;
+      } default:
+        break;
+      }
+    }
+    // visitorKeys: []
+    // leave (node, parent)
+  }, {});
+
+  // Todo: Need to recurse on the contents of these
+  return [...new Set(await Promise.all(resolvedArr))];
 }
 
 module.exports = traverse;

@@ -10,10 +10,14 @@
 
 const optionDefinitions = [
   {
-    name: 'file', alias: 'f', type: String, multiple: true, defaultOption: true,
-    description: 'File (or directory) entries to process for beginning ' +
-      'traversal',
+    name: 'file', alias: 'f', type: String, defaultOption: true,
+    description: 'File entry to process for beginning traversal',
     typeLabel: '{underline file-path}'
+  },
+  {
+    name: 'cwd', type: String,
+    descpription: 'Current working directory; defaults to `process.cwd()`',
+    typeLabel: '{underline path}'
   },
   {
     name: 'help', alias: 'h', type: Boolean,
