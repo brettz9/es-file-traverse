@@ -112,6 +112,8 @@ async function traverse ({
   }, {});
 
   // Todo: Need to recurse on the contents of these
+  // Todo: Allow generic callback within, e.g., for collecting comments
+  //  which have no AST
   return [...new Set(await Promise.all(resolvedArr))];
 }
 
