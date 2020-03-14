@@ -88,6 +88,8 @@ async function traverse ({
 
   // console.log('result', result.ast);
 
+  // Todo: Could try esquery(result.ast, 'ImportDeclaration') to get AST nodes
+
   const resolvedArr = [];
   Traverser.traverse(result.ast, {
     enter (node /* , parent */) {
