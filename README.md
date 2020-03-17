@@ -13,7 +13,10 @@
 [![Total Alerts](https://img.shields.io/lgtm/alerts/g/brettz9/es-file-traverse.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/brettz9/es-file-traverse/alerts)
 [![Code Quality: Javascript](https://img.shields.io/lgtm/grade/javascript/g/brettz9/es-file-traverse.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/brettz9/es-file-traverse/context:javascript)
 
-[![License](https://img.shields.io/npm/l/es-file-traverse.svg)](LICENSE-MIT.txt)
+<!--[![License](https://img.shields.io/npm/l/es-file-traverse.svg)](LICENSE-MIT.txt)-->
+[![Licenses badge](https://raw.githubusercontent.com/brettz9/es-file-traverse/master/badges/licenses-badge.svg?sanitize=true)](badges/licenses-badge.svg)
+
+(see also [licenses for dev. deps.](https://raw.githubusercontent.com/brettz9/es-file-traverse/master/badges/licenses-badge-dev.svg?sanitize=true))
 
 [![issuehunt-to-marktext](https://issuehunt.io/static/embed/issuehunt-button-v1.svg)](https://issuehunt.io/r/brettz9/es-file-traverse)
 
