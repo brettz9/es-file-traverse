@@ -53,3 +53,4 @@
 1. Use esp. for `eslint-plugin-privileges` (and `eslint-plugin-query`),
     though really could file to become part of eslint core.
 1. Use for `eslint-plugin-jsdoc` in getting at defined variables
+1. Use for **autocomplete**?
