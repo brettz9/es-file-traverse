@@ -57,5 +57,6 @@
 1. Iterate **script tags** in HTML also
 1. **Validate JavaScript with JSDoc** alone (no TypeScript needed),
     e.g., function calls which are supplying the wrong type
-    1. Might begin by validating signatures, finding the source of
-        each `/** @type */` and subsituting its `@typedef`.
+1. Validate function signatures, etc., as with `eslint-plugin-jsdoc`,
+    but finding the source of each `/** @type */` and subsituting
+    its `@typedef`.
