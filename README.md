@@ -54,3 +54,8 @@
     though really could file to become part of eslint core.
 1. Use for `eslint-plugin-jsdoc` in getting at defined variables
 1. Use for **autocomplete**?
+1. Iterate **script tags** in HTML also
+1. **Validate JavaScript with JSDoc** alone (no TypeScript needed),
+    e.g., function calls which are supplying the wrong type
+    1. Might begin by validating signatures, finding the source of
+        each `/** @type */` and subsituting its `@typedef`.
