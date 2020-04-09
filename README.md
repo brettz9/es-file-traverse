@@ -60,3 +60,4 @@
 1. Validate function signatures, etc., as with `eslint-plugin-jsdoc`,
     but finding the source of each `/** @type */` and subsituting
     its `@typedef`.
+1. See uses in `eslint-plugin-query` to-dos
