@@ -50,6 +50,7 @@
     Can also avoid errors when the file type is detected as JSON
     (requiring a JSON file) or if the feature of registering a file
     type was used (then handling that as appropriate).
+    1. Check source maps to refer back to source
 1. Use esp. for `eslint-plugin-privileges` (and `eslint-plugin-query`),
     though really could file to become part of eslint core.
 1. Use for `eslint-plugin-jsdoc` in getting at defined variables
