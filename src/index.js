@@ -3,6 +3,7 @@
 const {dirname} = require('path');
 const {parseForESLint} = require('babel-eslint');
 const _resolve = require('resolve');
+const esquery = require('esquery');
 
 const requireResolve = (path, opts = {}) => {
   // eslint-disable-next-line promise/avoid-new
@@ -30,8 +31,6 @@ console.log('defaultKeys', defaultKeys);
 //  if doing along the way, only perform linting once per discovered file).
 //  But ensure the traversal code is separated so we can have a useful
 //  generic traverser by import/require (dynamic or static).
-
-// Todo: can probably just use esquery instead for traversal?
 
 // Note: if looking also for what is *exported*, e.g., to know what
 //   globals are, if non-module mode in browser, should look at `var` and
@@ -89,6 +88,14 @@ async function traverse ({
   // console.log('result', result.ast);
 
   // Todo: Could try esquery(result.ast, 'ImportDeclaration') to get AST nodes
+  esquery.traverse(
+    result.ast,
+    esquery.parse('ImportDeclaration'),
+    (node, parent, ancestry) => {
+      // eslint-disable-next-line no-console
+      console.log('esquery node', node);
+    }
+  );
 
   const resolvedArr = [];
   Traverser.traverse(result.ast, {
