@@ -3,10 +3,11 @@
 module.exports = {
   parser: 'babel-eslint',
   extends: [
-    'ash-nazg/sauron',
+    'ash-nazg/sauron-node',
     'plugin:node/recommended-script'
   ],
   env: {
+    node: true,
     es6: true
   },
   settings: {
@@ -50,6 +51,7 @@ module.exports = {
     }
   }],
   rules: {
+    'node/exports-style': 0,
     'no-process-exit': 0,
 
     'import/no-commonjs': 0,

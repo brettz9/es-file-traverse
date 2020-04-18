@@ -29,7 +29,7 @@ const cliSections = [
   {
     header: 'es-file-traverse',
     // Add italics: `{italic textToItalicize}`
-    // eslint-disable-next-line global-require
+    // eslint-disable-next-line node/global-require
     content: require('../package.json').description
   },
   {
