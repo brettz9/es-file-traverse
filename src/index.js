@@ -87,7 +87,6 @@ async function traverse ({
 
   // console.log('result', result.ast);
 
-  // Todo: Could try esquery(result.ast, 'ImportDeclaration') to get AST nodes
   esquery.traverse(
     result.ast,
     esquery.parse('ImportDeclaration'),

@@ -54,6 +54,9 @@
         1. See also:
             1. <https://github.com/Bartvds/eslint-path-formatter>
             1. <https://github.com/a-x-/eslint-path-formatter2>
+    1. Allow collecting whole modules in use rather than files, so
+        can indicate desire to lint entire modules in use (e.g.,
+        so as to report back problems across the whole repo)
 1. Use esp. for `eslint-plugin-privileges` (and `eslint-plugin-query`),
     though really could file to become part of eslint core.
 1. Use for `eslint-plugin-jsdoc` in getting at defined variables
