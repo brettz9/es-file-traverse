@@ -21,30 +21,30 @@ module.exports = {
   },
   overrides: [{
     files: ['test/**'],
-    extends: [
-    ],
     env: {
-      mocha: true
-    },
-    globals: {
-      expect: true
-    }
-  }, {
-    files: ['test/**'],
-    extends: [
-      'plugin:node/recommended-module',
-      'plugin:chai-friendly/recommended',
-      'plugin:chai-expect/recommended'
-    ],
-    env: {
+      mocha: true,
       node: true
     },
     globals: {
       require: true,
-      __dirname: true
+      __dirname: true,
+      expect: true
     },
+    extends: [
+      'plugin:@fintechstudios/eslint-plugin-chai-as-promised/recommended',
+      'plugin:chai-expect-keywords/recommended',
+      'plugin:node/recommended-module',
+      'plugin:chai-friendly/recommended',
+      'plugin:chai-expect/recommended'
+    ],
     rules: {
-      'compat/compat': 0
+      'compat/compat': 0,
+      'chai-expect-keywords/no-unsupported-keywords': [
+        'error', {
+          // allowChaiDOM: true,
+          allowChaiAsPromised: true
+        }
+      ]
     }
   }, {
     files: ['*.md'],
