@@ -74,6 +74,10 @@ async function traverse ({
   cwd = process.cwd()
 }) {
   const resolvedMap = new Map();
+  if (typeof callback === 'string') {
+    // eslint-disable-next-line node/global-require, import/no-dynamic-require
+    callback = require(callback);
+  }
 
   const serialOrParallel = serial
     ? (proms) => {
@@ -89,12 +93,6 @@ async function traverse ({
    * @returns {Promise<void>}
    */
   async function traverseFile (file) {
-    if (typeof callback === 'string') {
-      // eslint-disable-next-line max-len
-      // eslint-disable-next-line node/global-require, import/no-dynamic-require
-      callback = require(callback);
-    }
-
     // Todo: Make these `require.resolve`'s avoid Node resolution
     //   for browser-only
     const fullPath = require.resolve(file, {
@@ -158,10 +156,13 @@ async function traverse ({
     await serialOrParallel(proms);
   }
 
-  const files = await globby(fileArray);
+  const files = await globby(fileArray, {
+    cwd
+  });
+
   await serialOrParallel(
-    files.map((item) => {
-      return traverseFile(item);
+    files.map((file) => {
+      return traverseFile(file);
     })
   );
 

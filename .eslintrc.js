@@ -42,6 +42,9 @@ module.exports = {
     globals: {
       require: true,
       __dirname: true
+    },
+    rules: {
+      'compat/compat': 0
     }
   }, {
     files: ['*.md'],
