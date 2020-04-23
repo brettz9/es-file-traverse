@@ -30,41 +30,77 @@
 
 ## To-dos
 
-1. Iterate through files for `require`, `import` (dynamic or static), and maybe
-    `define` (`fetch` or `XMLHttpRequest` could be used with `eval` but that
-    rule could not be readily used without a lot of complexity). Ensure can
-    check any extension found for an imported/required file, not
-    just those at command line. Use <https://www.npmjs.com/package/resolve>
-    to find the next file (for `env: "node"`); also follow through
-    any binaries that are executed (e.g.,
-    `child_process.spawn('node_mod_a')` ->
-    `node_modules/.bin/node_mod_a` ->
-    `node_modules/node_mod_a/cli/index.js`); could have linting to ensure
-    though that instead of spawning raw `node_mod` which could conflict with
-    a native `node_mod_a`, should use fixed paths for child processes.
-    Could, however, whitelist certain trusted native executables, albeit
-    with a potential risk of namespace conflicts.
-    With a need to follow through the individual files anyways, we can
-    also check along the way whether this is strict mode file or not,
-    and lint that file accordingly, avoiding undue parsing failures.
-    Can also avoid errors when the file type is detected as JSON
-    (requiring a JSON file) or if the feature of registering a file
-    type was used (then handling that as appropriate).
-    1. Check source maps to refer back to source
-        1. See also:
-            1. <https://github.com/Bartvds/eslint-path-formatter>
-            1. <https://github.com/a-x-/eslint-path-formatter2>
-    1. Allow collecting whole modules in use rather than files, so
-        can indicate desire to lint entire modules in use (e.g.,
-        so as to report back problems across the whole repo)
-1. Use esp. for `eslint-plugin-privileges` (and `eslint-plugin-query`),
-    though really could file to become part of eslint core.
-1. Use for `eslint-plugin-jsdoc` in getting at defined variables
-1. Use for **autocomplete**?
-1. Iterate **script tags** in HTML also
-1. **Validate JavaScript with JSDoc** alone (no TypeScript needed),
-    e.g., function calls which are supplying the wrong type
-1. Validate function signatures, etc., as with `eslint-plugin-jsdoc`,
-    but finding the source of each `/** @type */` and subsituting
-    its `@typedef`.
-1. See uses in `eslint-plugin-query` to-dos
+1. Iteration methods
+    1. Iterate through files for `require`, `import` (dynamic or static), and maybe
+        `define` (`fetch` or `XMLHttpRequest` could be used with `eval` but that
+        rule could not be readily used without a lot of complexity). Ensure can
+        check any extension found for an imported/required file, not
+        just those at command line. Use <https://www.npmjs.com/package/resolve>
+        to find the next file (for `env: "node"`); also follow through
+        any binaries that are executed (e.g.,
+        `child_process.spawn('node_mod_a')` ->
+        `node_modules/.bin/node_mod_a` ->
+        `node_modules/node_mod_a/cli/index.js`); could have linting to ensure
+        though that instead of spawning raw `node_mod` which could conflict with
+        a native `node_mod_a`, should use fixed paths for child processes.
+        Could, however, whitelist certain trusted native executables, albeit
+        with a potential risk of namespace conflicts.
+        With a need to follow through the individual files anyways, we can
+        also check along the way whether this is strict mode file or not,
+        and lint that file accordingly, avoiding undue parsing failures.
+        Can also avoid errors when the file type is detected as JSON
+        (requiring a JSON file) or if the feature of registering a file
+        type was used (then handling that as appropriate).
+        1. Check source maps to refer back to source
+            1. See also:
+                1. <https://github.com/Bartvds/eslint-path-formatter>
+                1. <https://github.com/a-x-/eslint-path-formatter2>
+        1. Allow collecting whole modules in use rather than files, so
+            can indicate desire to lint entire modules in use (e.g.,
+            so as to report back problems across the whole repo)
+    1. Could have generic API for whether to traverse through ESM, CJS, whether
+         `import`, `require` or possibly `define` (and HTML script tags even,
+         noting whether type=module or not, so could note whether there was a
+         mismatch of export type in the discovered files), utilizing import maps,
+         with either a callback or esquer(ies) for how
+         to collect the data of interest on each page, then return that result
+         with file name/path (and module type used, e.g., if multiple module types
+         are being queried). For linting, we could just get files and then
+         use `eslint-plugin-query` with the selectors there instead. Could have
+         `strategies` option for built-in following of requires, but could also
+         iterate based on following a function call which would need to
+         track stacks, e.g., to follow dynamic imports in order or when only
+         needing to check linting on a particular API.
+    1. Iterate **script tags** in HTML also
+1. Ensure has CLI (as well as programmatic) option to be able to pass list
+    of files to `eslint`:
+    <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
+1. Option to give an error or report listing **files which were not
+    traversed** but within a set of specified files.
+1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
+    (e.g., when linting non-security issues)
+1. Uses elsewhere:
+    1. Propose this traversal mechanism as a **command line option for
+        eslint itself**, esp. if get as a working demo (in place of, or in
+        addition to, a set of whitelisted files).
+        1. Perform linting (or if doing along the way, only perform linting
+            once per discovered file). Traversal code should remain
+            separate so can keep a useful generic traverser by
+            import/require (dynamic or static) rather than becoming a linter.
+    1. Use esp. for `eslint-plugin-privileges` (and `eslint-plugin-query`).
+    1. Use for `eslint-plugin-jsdoc` in getting at defined variables
+    1. **Validate JavaScript with JSDoc** alone (no TypeScript needed),
+        e.g., function calls which are supplying the wrong type; added
+        as `eslint-plugin-jsdoc` to-do
+    1. Validate function signatures, etc., as with `eslint-plugin-jsdoc`,
+        but finding the source of each `/** @type */` and subsituting
+        its `@typedef`.
+    1. Use for gathering info to use in **autocomplete** (not only import
+        paths but variables/symbols)?
+    1. See uses in `eslint-plugin-query` to-dos
+    1. Note: if looking also for what is *exported*, e.g., to know what
+        globals are, if non-module mode in browser, should look at `var`
+        and even `const`/`let`; can then use, e.g., for
+        `jsdoc/no-undefined-types`; as with `no-unrestricted-properties`,
+        etc., we want to find out when `window` or other globals are used,
+        but to collect the uses, rather than report them.

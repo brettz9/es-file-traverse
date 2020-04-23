@@ -11,7 +11,9 @@
 const optionDefinitions = [
   {
     name: 'file', alias: 'f', type: String, defaultOption: true,
-    description: 'File entry to process for beginning traversal. Required.',
+    multiple: true,
+    description: 'File entry glob to process for beginning traversal. ' +
+      'Required.',
     typeLabel: '{underline file-path}'
   },
   {
