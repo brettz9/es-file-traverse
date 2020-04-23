@@ -42,7 +42,6 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 
 ## To-dos
 
-1. Testing: Add tests and get to 100% coverage
 1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
     when done (dogfooding with linting badge)
 1. Options
