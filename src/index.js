@@ -25,15 +25,44 @@ const exportNamedDeclaration = 'ExportNamedDeclaration[source.value]';
 // export * as b from c;
 const exportAllDeclaration = 'ExportAllDeclaration[source.value]';
 
-const esmDeclarations = esquery.parse(
+const dynamicImport = 'CallExpression' +
+  '[callee.type="import"][arguments.length=1]';
+  // From `eslint-plugin-import` for std::string?
+  // ':has(Literal[value!="string"])';
+
+const esmImports = esquery.parse(
   `:matches(${
-    importDeclaration
-  },${
-    exportNamedDeclaration
-  },${
-    exportAllDeclaration
+    [
+      importDeclaration, exportNamedDeclaration,
+      exportAllDeclaration, dynamicImport
+    ].join(',')
   })`
 );
+
+/*
+const cjs = 'CallExpression' +
+  '[callee.type="Identifier"][callee.name="require"][arguments.length=1]';
+  // From `eslint-plugin-import` for std::string?
+  // ':has(Literal[value!="string"])';
+
+const amdDefine = 'CallExpression' +
+  '[callee.type="Identifier"]' +
+    '[callee.name="define"][arguments.length=2]' +
+    ':has(ArrayExpression)';
+
+const amdRequire = 'CallExpression' +
+'[callee.type="Identifier"]' +
+  '[callee.name="require"][arguments.length=2]' +
+    ':has(' +
+      'ArrayExpression:has(' +
+        'Literal:not(' +
+          ':matches([value="string"],[value="require"],[value="exports"])' +
+        ')' +
+      ')' +
+    ')';
+
+const amd = `:matches(${amdDefine},${amdRequire})`;
+*/
 
 /**
  * @param {ESFileTraverseOptionDefinitions} config
@@ -68,7 +97,7 @@ async function traverse ({
     const proms = [];
     esquery.traverse(
       result.ast,
-      esmDeclarations,
+      esmImports,
       (node, parent, ancestry) => {
         // // eslint-disable-next-line no-console
         // console.log('esquery node', node);
