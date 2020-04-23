@@ -1,6 +1,6 @@
 {
   "mochaBadgeGeneratorReporterOptions": {
-    "badge_output": "../../badges/tests-badge.svg"
+    "badge_output": "badges/tests-badge.svg"
   },
-  "reporterEnabled": "mocha-badge-generator, spec"
+  "reporterEnabled": "spec,mocha-badge-generator"
 }

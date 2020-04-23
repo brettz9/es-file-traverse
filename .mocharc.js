@@ -1,7 +1,13 @@
 'use strict';
 
 module.exports = {
-  delay: true,
   exclude: 'test/*/**',
-  reporter: 'mocha-multi-reporters'
+  reporter: 'mocha-multi-reporters',
+  'reporter-option': [
+    'configFile=mocha-multi-reporters.json',
+    'badge_output=doc-includes/tests-badge.svg'
+  ],
+  require: [
+    'esm', 'chai/register-expect'
+  ]
 };

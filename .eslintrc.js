@@ -32,7 +32,9 @@ module.exports = {
   }, {
     files: ['test/**'],
     extends: [
-      'plugin:node/recommended-module'
+      'plugin:node/recommended-module',
+      'plugin:chai-friendly/recommended',
+      'plugin:chai-expect/recommended'
     ],
     env: {
       node: true
