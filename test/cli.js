@@ -45,6 +45,30 @@ describe('CLI', function () {
     });
   });
 
+  it('esFileTraverse binary (file) can load serially', async function () {
+    const {stdout, stderr} = await spawnPromise(cliPath, [
+      '--serial',
+      '--file', './test/fixtures/multi-imports.js'
+    ], 5000);
+    expect(stderr).to.equal('');
+    expect(stdout).to.contain('filesArr');
+    const indexes = [];
+    [
+      '/test/fixtures/multi-imports.js',
+      '/test/fixtures/file2.js',
+      '/test/fixtures/file3.js',
+      '/test/fixtures/file4.js',
+      '/test/fixtures/file5.js',
+      '/test/fixtures/file6.js'
+    ].forEach((expectedFile, i) => {
+      indexes.push(stdout.indexOf(expectedFile));
+      expect(stdout).to.include(expectedFile);
+      if (i > 0) {
+        expect(indexes[i]).to.be.greaterThan(indexes[i - 1]);
+      }
+    });
+  });
+
   it('esFileTraverse binary (file) with callback module', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
       '--file', './test/fixtures/main.js',

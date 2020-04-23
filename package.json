@@ -18,6 +18,7 @@
     "eslint": "eslint --ext=js,md,html .",
     "lint": "npm run eslint",
     "coverage-badge": "coveradge doc-includes/coverage-badge.svg",
+    "mocha": "mocha",
     "test": "echo 'Removing esm cache which seems to blank out istanbul coverage when breaking out early' && rm -Rf node_modules/.cache && nyc mocha && npm run coverage-badge"
   },
   "engines": {

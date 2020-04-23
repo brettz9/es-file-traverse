@@ -38,6 +38,9 @@ module.exports = {
       'plugin:chai-expect/recommended'
     ],
     rules: {
+      'node/no-unsupported-features/es-syntax': ['error', {
+        ignores: ['dynamicImport', 'modules']
+      }],
       'compat/compat': 0,
       'chai-expect-keywords/no-unsupported-keywords': [
         'error', {

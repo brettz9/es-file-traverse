@@ -14,20 +14,25 @@ const resolve = require('./resolve');
 // Decided againts @babel/traverse, in case might use ESLint AST
 //  for ESLint rules
 
-// `import * as b from 'abc';`
-// `import {b} from 'abc';`
+// `import * as b from './abc.js';`
+// `import {b} from './abc.js';`
 const importDeclaration = 'ImportDeclaration[source.value]';
 
-// export {b} from 'c';
+// export {b} from './c.js';
 const exportNamedDeclaration = 'ExportNamedDeclaration[source.value]';
 
-// export * as b from c;
+// export * as b from './c.js';
 const exportAllDeclaration = 'ExportAllDeclaration[source.value]';
 
-const dynamicImport = 'CallExpression' +
-  '[callee.type="import"][arguments.length=1]';
+const dynamicImport =
+  ':matches(' +
+    // `eslint-plugin-import` checks for this
+    'CallExpression' +
+      '[callee.type="import"][arguments.length=1],' +
+    'ImportExpression' +
   // From `eslint-plugin-import` for std::string?
   // ':has(Literal[value!="string"])';
+  ')';
 
 const esmImports = esquery.parse(
   `:matches(${
