@@ -2,7 +2,6 @@
 [![Dependencies](https://img.shields.io/david/brettz9/es-file-traverse.svg)](https://david-dm.org/brettz9/es-file-traverse)
 [![devDependencies](https://img.shields.io/david/dev/brettz9/es-file-traverse.svg)](https://david-dm.org/brettz9/es-file-traverse?type=dev)
 
-[![Actions Status](https://github.com/brettz9/es-file-traverse/workflows/Node%20CI/badge.svg)](https://github.com/brettz9/es-file-traverse/actions)
 [![testing badge](https://raw.githubusercontent.com/brettz9/es-file-traverse/master/badges/tests-badge.svg?sanitize=true)](badges/tests-badge.svg)
 [![coverage badge](https://raw.githubusercontent.com/brettz9/es-file-traverse/master/badges/coverage-badge.svg?sanitize=true)](badges/coverage-badge.svg)
 <!--
@@ -39,6 +38,8 @@ npm i es-file-traverse
 ## To-dos
 
 1. Testing: Add tests and get to 100% coverage
+1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
+    when done (dogfooding with linting badge)
 1. Options
     1. Ensure has CLI (as well as programmatic) option to be able to pass list
         of files to `eslint`:
