@@ -14,7 +14,26 @@ const fetch = require('file-fetch');
 
 // Decided againts @babel/traverse, in case might use ESLint AST
 //  for ESLint rules
-const importDeclaration = esquery.parse('ImportDeclaration');
+
+// `import * as b from 'abc';`
+// `import {b} from 'abc';`
+const importDeclaration = 'ImportDeclaration[source.value]';
+
+// export {b} from 'c';
+const exportNamedDeclaration = 'ExportNamedDeclaration[source.value]';
+
+// export * as b from c;
+const exportAllDeclaration = 'ExportAllDeclaration[source.value]';
+
+const esmDeclarations = esquery.parse(
+  `:matches(${
+    importDeclaration
+  },${
+    exportNamedDeclaration
+  },${
+    exportAllDeclaration
+  })`
+);
 
 /**
  * @param {ESFileTraverseOptionDefinitions} config
@@ -49,7 +68,7 @@ async function traverse ({
     const proms = [];
     esquery.traverse(
       result.ast,
-      importDeclaration,
+      esmDeclarations,
       (node, parent, ancestry) => {
         // // eslint-disable-next-line no-console
         // console.log('esquery node', node);
