@@ -22,7 +22,15 @@
 
 # es-file-traverse
 
-**This project is not yet functional!**
+**This project is only minimally functional!**
+
+<!--
+## Installation
+
+```shell
+npm i es-file-traverse
+```
+-->
 
 ## CLI
 
