@@ -1,6 +1,6 @@
 'use strict';
 
-const {dirname} = require('path');
+const {dirname, join} = require('path');
 
 require('array-flat-polyfill');
 const {parseForESLint} = require('babel-eslint');
@@ -78,7 +78,7 @@ async function traverse ({
   const resolvedMap = new Map();
   if (typeof callback === 'string') {
     // eslint-disable-next-line node/global-require, import/no-dynamic-require
-    callback = require(callback);
+    callback = require(join(cwd, callback));
   }
 
   const serialOrParallel = serial
