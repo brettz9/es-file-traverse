@@ -55,6 +55,9 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
         (e.g., when linting non-security issues)
 1. Iteration methods
     1. Make `require.resolve`'s avoid Node resolution for browser-only.
+        1. Utilize import maps then return that result with file name/path
+            (and module type used, e.g., if multiple module types
+            are being queried).
     1. Enable CJS and AMD.
     1. Handle **dynamic `require` or `import`** (or `define`?) (e.g., pass
         back the file name and expression)?
@@ -72,15 +75,22 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
         a native `node_mod_a`, should use fixed paths for child processes.
         Could, however, whitelist certain trusted native executables, albeit
         with a potential risk of namespace conflicts.
-
-    1. Ensure linters can lint any extension found for an imported/required
-        file, not just those with `--ext` at command line.
-        With a need to follow through the individual files anyways, we can
-        also check along the way whether this is strict mode file or not,
-        and lint that file accordingly, avoiding undue parsing failures.
-        Can also avoid errors when the file type is detected as JSON
-        (requiring a JSON file) or if the feature of registering a file
-        type was used (then handling that as appropriate).
+1. Uses elsewhere:
+    1. **Linter**: Propose this traversal mechanism as a **command line
+        option for eslint itself**, esp. if get as a working demo (in
+        place of, or in addition to, a set of whitelisted files).
+        1. Perform linting (or if doing along the way, only perform linting
+            once per discovered file). Traversal code should remain
+            separate so can keep a useful generic traverser by
+            import/require (dynamic or static) rather than becoming a linter.
+        1. Ensure linters can lint any extension found for an imported/required
+            file, not just those with `--ext` at command line.
+        1. With a need to follow through the individual files anyways, we can
+            also check along the way whether this is strict mode file or not,
+            and lint that file accordingly, avoiding undue parsing failures.
+            Can also avoid errors when the file type is detected as JSON
+            (requiring a JSON file) or if the feature of registering a file
+            type was used (then handling that as appropriate).
         1. Check source maps to refer back to source
             1. See also:
                 1. <https://github.com/Bartvds/eslint-path-formatter>
@@ -88,23 +98,6 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
         1. Allow collecting whole modules in use rather than files, so
             can indicate desire to lint entire modules in use (e.g.,
             so as to report back problems across the whole repo)
-    1. Utilize import maps, with either a callback or esquer(ies) for how
-         to collect the data of interest on each page, then return that result
-         with file name/path (and module type used, e.g., if multiple module types
-         are being queried). For linting, we could just get files and then
-         use `eslint-plugin-query` with the selectors there instead. Could have
-         `strategies` option for built-in following of requires, but could also
-         iterate based on following a function call which would need to
-         track stacks, e.g., to follow dynamic imports in order or when only
-         needing to check linting on a particular API.
-1. Uses elsewhere:
-    1. Propose this traversal mechanism as a **command line option for
-        eslint itself**, esp. if get as a working demo (in place of, or in
-        addition to, a set of whitelisted files).
-        1. Perform linting (or if doing along the way, only perform linting
-            once per discovered file). Traversal code should remain
-            separate so can keep a useful generic traverser by
-            import/require (dynamic or static) rather than becoming a linter.
     1. Use esp. for `eslint-plugin-privileges` (and `eslint-plugin-query`).
     1. Use for `eslint-plugin-jsdoc` in getting at defined variables
     1. **Validate JavaScript with JSDoc** alone (no TypeScript needed),
