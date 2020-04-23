@@ -9,6 +9,8 @@ const globby = require('globby');
 // eslint-disable-next-line no-shadow
 const fetch = require('file-fetch');
 
+const resolve = require('./resolve');
+
 // Decided againts @babel/traverse, in case might use ESLint AST
 //  for ESLint rules
 
@@ -95,8 +97,15 @@ async function traverse ({
   async function traverseFile (file) {
     // Todo: Make these `require.resolve`'s avoid Node resolution
     //   for browser-only
+
+    /*
+    // Was giving problems (due to `esm` testing?)
     const fullPath = require.resolve(file, {
       paths: [cwd]
+    });
+    */
+    const fullPath = await resolve(file, {
+      basedir: cwd
     });
     if (resolvedMap.has(fullPath)) {
       return;
@@ -127,11 +136,17 @@ async function traverse ({
       (node, parent, ancestry) => {
         // // eslint-disable-next-line no-console
         // console.log('esquery node', node);
+        /*
         const resolvedImport = require.resolve(
           node.source.value, {
             paths: [dirname(fullPath)]
           }
         );
+        */
+        const resolvedImport = resolve.sync(node.source.value, {
+          basedir: dirname(fullPath)
+        });
+
         resolvedSet.add(resolvedImport);
 
         proms.push(traverseFile(resolvedImport));

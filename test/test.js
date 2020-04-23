@@ -5,7 +5,7 @@ import spawnPromise from './utilities/spawnPromise.js';
 const cliPath = pathResolve(__dirname, '../bin/cli.js');
 
 describe('esFileTraverse', function () {
-  it.only('esFileTraverse with `callback`', async function () {
+  it('esFileTraverse with `callback`', async function () {
     let callbackRan = false;
     const results = await esFileTraverse({
       cwd: dirname(new URL(import.meta.url).pathname),
