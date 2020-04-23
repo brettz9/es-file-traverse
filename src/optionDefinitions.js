@@ -17,13 +17,23 @@ const optionDefinitions = [
     typeLabel: '{underline file-path}'
   },
   {
+    name: 'callback', type: String,
+    description: 'Require path to be passed intermediate AST. Passed ' +
+      '"enter" or "exit" and an object with `fullPath`, `text`, and ' +
+      '`ast` (and in "exit" mode, also "proms" with array of traversal ' +
+      'Promises and `resolvedSet` with resolved imports for that file). ' +
+      'Default is none.',
+    typeLabel: '{underline require path}'
+  },
+  {
+    name: 'serial', type: Boolean,
+    description: 'Whether to iterate serially and ensure consistent order ' +
+      'in visiting files. Default is `false` as less performant.'
+  },
+  {
     name: 'cwd', type: String,
     descpription: 'Current working directory; defaults to `process.cwd()`',
     typeLabel: '{underline path}'
-  },
-  {
-    name: 'help', alias: 'h', type: Boolean,
-    description: 'Display this help guide'
   }
 ];
 

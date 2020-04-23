@@ -9,9 +9,6 @@ const globby = require('globby');
 // eslint-disable-next-line no-shadow
 const fetch = require('file-fetch');
 
-// Todo: adapt the following for CJS and AMD:
-//  https://github.com/benmosher/eslint-plugin-import/blob/master/utils/moduleVisitor.js#L4-L13
-
 // Decided againts @babel/traverse, in case might use ESLint AST
 //  for ESLint rules
 
@@ -39,7 +36,9 @@ const esmImports = esquery.parse(
   })`
 );
 
+// Todo: Reenable CJS and AMD
 /*
+// Inspired by: https://github.com/benmosher/eslint-plugin-import/blob/master/utils/moduleVisitor.js#L4-L13
 const cjs = 'CallExpression' +
   '[callee.type="Identifier"][callee.name="require"][arguments.length=1]';
   // From `eslint-plugin-import` for std::string?
@@ -70,15 +69,34 @@ const amd = `:matches(${amdDefine},${amdRequire})`;
  */
 async function traverse ({
   file: fileArray,
+  serial = false,
+  callback = null,
   cwd = process.cwd()
 }) {
   const resolvedMap = new Map();
+
+  const serialOrParallel = serial
+    ? (proms) => {
+      return proms.reduce(async (ret, prom) => {
+        await ret;
+        return prom;
+      }, Promise.resolve());
+    }
+    : (proms) => Promise.all(proms);
 
   /**
    * @param {string} file
    * @returns {Promise<void>}
    */
   async function traverseFile (file) {
+    if (typeof callback === 'string') {
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line node/global-require, import/no-dynamic-require
+      callback = require(callback);
+    }
+
+    // Todo: Make these `require.resolve`'s avoid Node resolution
+    //   for browser-only
     const fullPath = require.resolve(file, {
       paths: [cwd]
     });
@@ -89,14 +107,24 @@ async function traverse ({
     const res = await fetch(fullPath);
     const text = await res.text();
 
-    const result = parseForESLint(text);
-    // console.log('result', result.ast);
+    const {ast} = parseForESLint(text);
+    // console.log('ast', ast);
+
+    if (callback) {
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, standard/no-callback-literal, node/callback-return
+      await callback('enter', {
+        fullPath,
+        text,
+        ast
+      });
+    }
 
     const resolvedSet = new Set();
     resolvedSet.add(fullPath);
     const proms = [];
     esquery.traverse(
-      result.ast,
+      ast,
       esmImports,
       (node, parent, ancestry) => {
         // // eslint-disable-next-line no-console
@@ -115,21 +143,32 @@ async function traverse ({
       fullPath,
       resolvedSet
     );
-    await Promise.all(proms);
+
+    if (callback) {
+      // eslint-disable-next-line max-len
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, standard/no-callback-literal, node/callback-return
+      await callback('exit', {
+        fullPath,
+        text,
+        ast,
+        proms,
+        resolvedSet
+      });
+    }
+    await serialOrParallel(proms);
   }
 
   const files = await globby(fileArray);
-  // Todo: Add option to run serially (use `reduce`)
-  await Promise.all(
+  await serialOrParallel(
     files.map((item) => {
       return traverseFile(item);
     })
   );
 
-  // Todo: Allow generic callback within, e.g., for collecting comments
-  //  which have no AST
+  // Todo: We could instead use (or return) a single set but gathering
+  //   per file currently, so avoiding building a separate `Set` for now.
   return [...new Set(
-    (await Promise.all([...resolvedMap.values()])).flatMap((set) => {
+    [...resolvedMap.values()].flatMap((set) => {
       return [...set];
     })
   )];

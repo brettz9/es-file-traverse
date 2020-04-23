@@ -30,8 +30,20 @@
 
 ## To-dos
 
+1. Testing: Add tests and get to 100% coverage
+1. Options
+    1. Ensure has CLI (as well as programmatic) option to be able to pass list
+        of files to `eslint`:
+        <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
+    1. Option to give an error or report listing **files which were not
+        traversed** but within a set of specified files.
+    1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
+        (e.g., when linting non-security issues)
 1. Iteration methods
-    1. Recover if **dynamic `require` or `import`** (or `define`?)?
+    1. Make `require.resolve`'s avoid Node resolution for browser-only.
+    1. Enable CJS and AMD.
+    1. Handle **dynamic `require` or `import`** (or `define`?) (e.g., pass
+        back the file name and expression)?
     1. Iterate **script tags** in HTML also, noting whether `type="module"`
         or not so could note whether there was a mismatch of export type in
         the discovered files).
@@ -47,8 +59,8 @@
         Could, however, whitelist certain trusted native executables, albeit
         with a potential risk of namespace conflicts.
 
-    1. Ensure can check any extension found for an imported/required file, not
-        just those at command line.
+    1. Ensure linters can lint any extension found for an imported/required
+        file, not just those with `--ext` at command line.
         With a need to follow through the individual files anyways, we can
         also check along the way whether this is strict mode file or not,
         and lint that file accordingly, avoiding undue parsing failures.
@@ -71,13 +83,6 @@
          iterate based on following a function call which would need to
          track stacks, e.g., to follow dynamic imports in order or when only
          needing to check linting on a particular API.
-1. Ensure has CLI (as well as programmatic) option to be able to pass list
-    of files to `eslint`:
-    <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
-1. Option to give an error or report listing **files which were not
-    traversed** but within a set of specified files.
-1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
-    (e.g., when linting non-security issues)
 1. Uses elsewhere:
     1. Propose this traversal mechanism as a **command line option for
         eslint itself**, esp. if get as a working demo (in place of, or in
@@ -96,6 +101,7 @@
         its `@typedef`.
     1. Use for gathering info to use in **autocomplete** (not only import
         paths but variables/symbols)?
+    1. Collect comments (which have no AST)
     1. See uses in `eslint-plugin-query` to-dos
     1. Note: if looking also for what is *exported*, e.g., to know what
         globals are, if non-module mode in browser, should look at `var`
