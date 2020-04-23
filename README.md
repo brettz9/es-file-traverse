@@ -31,13 +31,14 @@
 ## To-dos
 
 1. Iteration methods
-    1. Iterate through files for `require`, `import` (dynamic or static), and maybe
-        `define` (`fetch` or `XMLHttpRequest` could be used with `eval` but that
-        rule could not be readily used without a lot of complexity). Ensure can
-        check any extension found for an imported/required file, not
-        just those at command line. Use <https://www.npmjs.com/package/resolve>
-        to find the next file (for `env: "node"`); also follow through
-        any binaries that are executed (e.g.,
+    1. Recover if **dynamic `require` or `import`** (or `define`?)?
+    1. Iterate **script tags** in HTML also, noting whether `type="module"`
+        or not so could note whether there was a mismatch of export type in
+        the discovered files).
+    1. Support **transpiling** (e.g., Rollup with node-resolve and CJS plugins)
+    1. **`fetch` or `XMLHttpRequest`** could be used with `eval` but that
+        rule could not be readily used without a lot of complexity.
+    1. Follow through with any **binaries** that are executed (e.g.,
         `child_process.spawn('node_mod_a')` ->
         `node_modules/.bin/node_mod_a` ->
         `node_modules/node_mod_a/cli/index.js`); could have linting to ensure
@@ -45,6 +46,9 @@
         a native `node_mod_a`, should use fixed paths for child processes.
         Could, however, whitelist certain trusted native executables, albeit
         with a potential risk of namespace conflicts.
+
+    1. Ensure can check any extension found for an imported/required file, not
+        just those at command line.
         With a need to follow through the individual files anyways, we can
         also check along the way whether this is strict mode file or not,
         and lint that file accordingly, avoiding undue parsing failures.
@@ -58,11 +62,7 @@
         1. Allow collecting whole modules in use rather than files, so
             can indicate desire to lint entire modules in use (e.g.,
             so as to report back problems across the whole repo)
-    1. Could have generic API for whether to traverse through ESM, CJS, whether
-         `import`, `require` or possibly `define` (and HTML script tags even,
-         noting whether type=module or not, so could note whether there was a
-         mismatch of export type in the discovered files), utilizing import maps,
-         with either a callback or esquer(ies) for how
+    1. Utilize import maps, with either a callback or esquer(ies) for how
          to collect the data of interest on each page, then return that result
          with file name/path (and module type used, e.g., if multiple module types
          are being queried). For linting, we could just get files and then
@@ -71,7 +71,6 @@
          iterate based on following a function call which would need to
          track stacks, e.g., to follow dynamic imports in order or when only
          needing to check linting on a particular API.
-    1. Iterate **script tags** in HTML also
 1. Ensure has CLI (as well as programmatic) option to be able to pass list
     of files to `eslint`:
     <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
