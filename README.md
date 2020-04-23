@@ -40,29 +40,33 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 
 ![doc-includes/cli.svg](doc-includes/cli.svg)
 
-## To-dos
+## Immediate to-dos
 
-1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
-    when done (dogfooding with linting badge)
-1. Options
-    1. Ensure has CLI (as well as programmatic) option to be able to pass list
-        of files to `eslint`:
-        <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
-    1. Option to give an error or report listing **files which were not
-        traversed** but within a set of specified files.
-    1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
-        (e.g., when linting non-security issues)
-1. Iteration methods
+1. Modes
     1. Make `require.resolve`'s avoid Node resolution for browser-only.
         1. Utilize import maps then return that result with file name/path
             (and module type used, e.g., if multiple module types
             are being queried).
     1. Enable CJS and AMD.
-    1. Handle **dynamic `require` or `import`** (or `define`?) (e.g., pass
-        back the file name and expression)?
     1. Iterate **script tags** in HTML also, noting whether `type="module"`
         or not so could note whether there was a mismatch of export type in
         the discovered files).
+1. Ensure has CLI (as well as programmatic) option to be able to pass list
+    of files to `eslint`:
+    <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
+1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
+    when done (dogfooding with linting badge)
+
+## To-dos
+
+1. Options
+    1. Option to give an error or report listing **files which were not
+        traversed** but within a set of specified files.
+    1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
+        (e.g., when linting non-security issues)
+1. Iteration methods
+    1. Handle **dynamic `require` or `import`** (or `define`?) (e.g., pass
+        back the file name and expression)?
     1. Support **transpiling** (e.g., Rollup with node-resolve and CJS plugins)
     1. **`fetch` or `XMLHttpRequest`** could be used with `eval` but that
         rule could not be readily used without a lot of complexity.
