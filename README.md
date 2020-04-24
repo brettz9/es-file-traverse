@@ -43,14 +43,14 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 ## Immediate to-dos
 
 1. Modes
-    1. Make `require.resolve`'s avoid Node resolution for browser-only.
-        1. Use `new URL()` with 2 args
-        1. Add tests
-    1. Iterate **script tags** in HTML also, noting whether `type="module"`
-        or not so could note whether there was a mismatch of export type in
-        the discovered files). Check `src` and text content. Add tests.
-        1. Try using `htmlparser2` only
-    1. Enable CJS and AMD and add tests.
+    1. Add **option to force type** rather than **relying on extensions**
+        (cjs, mjs, js or htm/html), including **script tags**
+    1. Option to parse **`type: 'module'`** in `package.json`
+    1. **Add tests**
+        1. package.json type/cjs/mjs and force type option
+        1. browser-only resolve
+        1. script tags (src and text)
+        1. CJS and AMD.
 1. Ensure has CLI (as well as programmatic) option to be able to pass list
     of files to `eslint`:
     <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
@@ -59,12 +59,15 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 
 ## To-dos
 
+1. Build globals list for users also!
 1. Options
     1. Option to give an error or report listing **files which were not
         traversed** but within a set of specified files.
     1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
         (e.g., when linting non-security issues)
 1. Iteration methods
+    1. For modules, check also for `require` when Node's `module.createRequire`
+        or `module.createRequireFromPath` are used.
     1. Utilize **import maps** then return that result with file name/path
         (and module type used, e.g., if multiple module types
         are being queried).
@@ -85,6 +88,8 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
     1. **Linter**: Propose this traversal mechanism as a **command line
         option for eslint itself**, esp. if get as a working demo (in
         place of, or in addition to, a set of whitelisted files).
+        1. tern-like linting validator; build scopes across files with
+            `escope` and use for checking function calls/references.
         1. Perform linting (or if doing along the way, only perform linting
             once per discovered file). Traversal code should remain
             separate so can keep a useful generic traverser by

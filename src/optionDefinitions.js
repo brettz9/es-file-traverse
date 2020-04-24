@@ -20,9 +20,10 @@ const optionDefinitions = [
     name: 'callback', type: String,
     description: 'Require path to be passed intermediate AST. Passed ' +
       '"enter" or "exit" and an object with `fullPath`, `text`, and ' +
-      '`ast` (and in "exit" mode, also "proms" with array of traversal ' +
-      'Promises and `resolvedSet` with resolved imports for that file). ' +
-      'Default is none.',
+      '`ast` (and in "exit" mode, also "type" ("exit", unlike "enter", ' +
+      'is run once for each module type, whether "esm", "cjs", or "amd"), ' +
+      '"proms" with array of traversal Promises, and `resolvedSet` with ' +
+      'resolved imports for that file). Default is none.',
     typeLabel: '{underline require path}'
   },
   {
@@ -34,6 +35,39 @@ const optionDefinitions = [
     name: 'cwd', type: String,
     descpription: 'Current working directory; defaults to `process.cwd()`',
     typeLabel: '{underline path}'
+  },
+  {
+    name: 'node', type: Boolean,
+    description: 'If assuming a Node.js environment (or one otherwise using ' +
+      'the Node resolution algorithm). Defaults to `false`.'
+  },
+  {
+    name: 'no-esm', type: Boolean,
+    description: 'Whether ES Modules imports should not be followed. ' +
+      'Defaults to `false` (imports will be followed).'
+  },
+  {
+    name: 'cjs', type: Boolean,
+    description: 'Whether to check Node/CommonJS modules. Defaults to ' +
+      '`false`. Assumes a non-overwritten `require`.'
+  },
+  {
+    name: 'amd', type: Boolean,
+    description: 'Whether to check AMD modules. Note that this will ' +
+      'ultimately depend on an `XMLHttpRequest` or `fetch` implementation' +
+      'in the browser. Defaults to `false`. Assumes a non-overwritten ' +
+      '`require` and `define`.'
+  },
+  {
+    name: 'babelESLintOptions', type: String,
+    description: 'Options (including `babelOptions` if desired) to pass to ' +
+      '`babel-eslint`. Defaults to an object with only an auto-determined ' +
+      '`filePath` being passed in and `sourceType` set to "module" by ' +
+      'default if the file extension ends in "mjs" or to "script" if it ' +
+      'ends in "cjs". Note that passing in HTML files will ' +
+      'cause `sourceType` to be auto-set depending on whether it is ' +
+      'specified as a script or module.',
+    typeLabel: '{underline options-as-JSON-object}'
   }
 ];
 

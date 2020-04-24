@@ -44,8 +44,6 @@ const esmImports = esquery.parse(
   })`
 );
 
-// Todo: Reenable CJS and AMD
-/*
 // Inspired by: https://github.com/benmosher/eslint-plugin-import/blob/master/utils/moduleVisitor.js#L4-L13
 const cjs = 'CallExpression' +
   '[callee.type="Identifier"][callee.name="require"][arguments.length=1]';
@@ -69,7 +67,20 @@ const amdRequire = 'CallExpression' +
     ')';
 
 const amd = `:matches(${amdDefine},${amdRequire})`;
-*/
+
+const selectorMap = new Map([
+  ['esm', esmImports],
+  ['cjs', cjs],
+  ['amd', amd]
+]);
+
+const browserResolver = (file, {basedir}) => {
+  return new URL(file, basedir).href;
+};
+// For polymorphism with `resolve`
+browserResolver.sync = (...args) => {
+  return browserResolver(...args);
+};
 
 /**
  * @param {ESFileTraverseOptionDefinitions} config
@@ -79,8 +90,20 @@ async function traverse ({
   file: fileArray,
   serial = false,
   callback = null,
-  cwd = process.cwd()
+  cwd = process.cwd(),
+  babelESLintOptions = {},
+  node: nodeResolution = false,
+  noEsm = false,
+  cjs: cjsModules = false,
+  amd: amdModules = false
 }) {
+  if (noEsm && !cjsModules && !amdModules) {
+    throw new Error(
+      'You must specify `noEsm` as `true` or set `cjs` or `amd` to true'
+    );
+  }
+  const resolver = nodeResolution ? resolve : browserResolver;
+
   const resolvedMap = new Map();
   if (typeof callback === 'string') {
     // eslint-disable-next-line node/global-require, import/no-dynamic-require
@@ -101,16 +124,13 @@ async function traverse ({
    * @returns {Promise<void>}
    */
   async function traverseJSFile (file) {
-    // Todo: Make these `require.resolve`'s avoid Node resolution
-    //   for browser-only
-
     /*
     // Was giving problems (due to `esm` testing?)
     const fullPath = require.resolve(file, {
       paths: [cwd]
     });
     */
-    const fullPath = await resolve(file, {
+    const fullPath = await resolver(file, {
       basedir: cwd
     });
     if (resolvedMap.has(fullPath)) {
@@ -120,7 +140,42 @@ async function traverse ({
     const res = await fetch(fullPath);
     const text = await res.text();
 
-    const {ast} = parseForESLint(text);
+    if (typeof babelESLintOptions === 'string') {
+      babelESLintOptions = JSON.parse(babelESLintOptions);
+    }
+
+    const {ast} = parseForESLint(text, {
+      filePath: fullPath,
+      sourceType: fullPath.endsWith('.mjs')
+        ? 'module'
+        : fullPath.endsWith('.cjs')
+          ? 'script'
+          : undefined,
+
+      ...babelESLintOptions
+      // babelOptions: {
+      //   cwd, root, rootMode, envName, configFile, babelrc, babelrcRoots,
+      //   extends, env, overrides, test, include, exclude, ignore, only
+      // },
+      // ecmaVersion: 2018,
+      // ecmaFeatures: {},
+      // allowImportExportEverywhere: false,
+
+      // parse.js : https://github.com/babel/babel-eslint/blob/master/lib/parse.js
+      // requireConfigFile,
+
+      // analyze-scope.js : https://github.com/babel/babel-eslint/blob/master/lib/analyze-scope.js
+      // ignoreEval: true,
+      // optimistic: false,
+      // directive: false,
+      /*
+      nodejsScope: ast.sourceType === "script" &&
+        (parserOptions.ecmaFeatures &&
+          parserOptions.ecmaFeatures.globalReturn) === true,
+      */
+      // impliedStrict: false,
+      // fallback
+    });
     // console.log('ast', ast);
 
     if (callback) {
@@ -133,53 +188,139 @@ async function traverse ({
       });
     }
 
+    /**
+     * @param {"esm"|"cjs"|"amd"} type
+     * @returns {Promise<void>}
+     */
+    async function esqueryTraverse (type) {
+      const selector = selectorMap.get(type);
+      esquery.traverse(
+        ast,
+        selector,
+        (node, parent, ancestry) => {
+          // // eslint-disable-next-line no-console
+          // console.log('esquery node', node);
+          /*
+          const resolvedPath = require.resolve(
+            node.source.value, {
+              paths: [dirname(fullPath)]
+            }
+          );
+          */
+          const resolvedPath = resolver.sync(node.source.value, {
+            basedir: dirname(fullPath)
+          });
+
+          resolvedSet.add(resolvedPath);
+
+          proms.push(traverseJSFile(resolvedPath));
+        }
+      );
+      resolvedMap.set(
+        fullPath,
+        resolvedSet
+      );
+
+      if (callback) {
+        // eslint-disable-next-line max-len
+        // eslint-disable-next-line promise/prefer-await-to-callbacks, standard/no-callback-literal, node/callback-return
+        await callback('exit', {
+          fullPath,
+          text,
+          ast,
+          type,
+          proms,
+          resolvedSet
+        });
+      }
+      await serialOrParallel(proms);
+    }
+
     const resolvedSet = new Set();
     resolvedSet.add(fullPath);
     const proms = [];
-    esquery.traverse(
-      ast,
-      esmImports,
-      (node, parent, ancestry) => {
-        // // eslint-disable-next-line no-console
-        // console.log('esquery node', node);
-        /*
-        const resolvedImport = require.resolve(
-          node.source.value, {
-            paths: [dirname(fullPath)]
-          }
-        );
-        */
-        const resolvedImport = resolve.sync(node.source.value, {
-          basedir: dirname(fullPath)
-        });
-
-        resolvedSet.add(resolvedImport);
-
-        proms.push(traverseJSFile(resolvedImport));
-      }
-    );
-    resolvedMap.set(
-      fullPath,
-      resolvedSet
-    );
-
-    if (callback) {
-      // eslint-disable-next-line max-len
-      // eslint-disable-next-line promise/prefer-await-to-callbacks, standard/no-callback-literal, node/callback-return
-      await callback('exit', {
-        fullPath,
-        text,
-        ast,
-        proms,
-        resolvedSet
-      });
+    if (!noEsm) {
+      await esqueryTraverse('esm');
     }
-    await serialOrParallel(proms);
+    if (cjsModules) {
+      await esqueryTraverse('cjs');
+    }
+    if (amdModules) {
+      await esqueryTraverse('amd');
+    }
   }
 
   const files = await globby(fileArray, {
     cwd
   });
+
+  let lastName, lastScriptIsModule;
+  const parser = new htmlparser2.Parser(
+    {
+      // onopentagname(name), onattribute(name, value), onclosetag(name),
+      //  onprocessinginstruction(name, data),
+      //  oncomment, oncommentend, oncdatastart, oncdataend, onerror(err),
+      //  onreset, onend
+      async onopentag (name, attribs) {
+        lastName = name;
+        lastScriptIsModule = false;
+        if (name === 'script') {
+          // Todo: Ensure auto-resolving in browser mode
+          const hasSource = {}.hasOwnProperty.call(attribs, 'src');
+          const isScript = !attribs.type || attribs.type === 'text/javascript';
+          const isModule = attribs.type === 'module';
+          const isJS = isScript || isModule;
+          if (
+            !isJS ||
+            // Handle later
+            !hasSource
+          ) {
+            lastScriptIsModule = isModule;
+            return;
+          }
+
+          await traverse({
+            file: attribs.src,
+            babelESLintOptions: {
+              ...babelESLintOptions,
+              sourceType: isModule ? 'module' : 'script'
+            },
+            serial,
+            callback,
+            cwd,
+            noEsm,
+            node: nodeResolution,
+            cjs: cjsModules,
+            amd: amdModules
+          });
+        }
+      },
+      async ontext (text) {
+        if (lastName !== 'script') {
+          return;
+        }
+        await traverse({
+          file: htmlFile,
+          babelESLintOptions: {
+            ...babelESLintOptions,
+            sourceType: lastScriptIsModule ? 'module' : 'script'
+          },
+          serial,
+          callback,
+          cwd,
+          noEsm,
+          node: nodeResolution,
+          cjs: cjsModules,
+          amd: amdModules
+        });
+      }
+    },
+    {decodeEntities: true}
+  );
+  parser.write(
+    'Xyz <script type="text/javascript">var foo = "<<bar>>";</ script>'
+  );
+  parser.end();
 
   await serialOrParallel(
     files.map((file) => {

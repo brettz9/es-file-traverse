@@ -62,6 +62,7 @@ module.exports = {
     'node/exports-style': 0,
     'no-process-exit': 0,
 
+    'compat/compat': 0,
     'import/no-commonjs': 0,
     'import/unambiguous': 0
   }
