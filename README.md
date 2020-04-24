@@ -44,6 +44,7 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 
 1. Modes
     1. Make `require.resolve`'s avoid Node resolution for browser-only.
+        1. Use `new URL()` with 2 args
         1. Utilize import maps then return that result with file name/path
             (and module type used, e.g., if multiple module types
             are being queried).
