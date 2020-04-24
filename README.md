@@ -45,10 +45,7 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 1. Modes
     1. Make `require.resolve`'s avoid Node resolution for browser-only.
         1. Use `new URL()` with 2 args
-        1. Utilize import maps then return that result with file name/path
-            (and module type used, e.g., if multiple module types
-            are being queried).
-        1. Add tests.
+        1. Add tests
     1. Iterate **script tags** in HTML also, noting whether `type="module"`
         or not so could note whether there was a mismatch of export type in
         the discovered files). Add tests.
@@ -67,6 +64,9 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
     1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
         (e.g., when linting non-security issues)
 1. Iteration methods
+    1. Utilize **import maps** then return that result with file name/path
+        (and module type used, e.g., if multiple module types
+        are being queried).
     1. Handle **dynamic `require` or `import`** (or `define`?) (e.g., pass
         back the file name and expression)?
     1. Support **transpiling** (e.g., Rollup with node-resolve and CJS plugins)
