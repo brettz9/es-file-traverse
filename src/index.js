@@ -8,6 +8,7 @@ const esquery = require('esquery');
 const globby = require('globby');
 // eslint-disable-next-line no-shadow
 const fetch = require('file-fetch');
+const htmlparser2 = require('htmlparser2');
 
 const resolve = require('./resolve');
 
@@ -99,7 +100,7 @@ async function traverse ({
    * @param {string} file
    * @returns {Promise<void>}
    */
-  async function traverseFile (file) {
+  async function traverseJSFile (file) {
     // Todo: Make these `require.resolve`'s avoid Node resolution
     //   for browser-only
 
@@ -154,7 +155,7 @@ async function traverse ({
 
         resolvedSet.add(resolvedImport);
 
-        proms.push(traverseFile(resolvedImport));
+        proms.push(traverseJSFile(resolvedImport));
       }
     );
     resolvedMap.set(
@@ -182,7 +183,7 @@ async function traverse ({
 
   await serialOrParallel(
     files.map((file) => {
-      return traverseFile(file);
+      return traverseJSFile(file);
     })
   );
 
