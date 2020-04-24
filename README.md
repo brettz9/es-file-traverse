@@ -48,7 +48,8 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
         1. Add tests
     1. Iterate **script tags** in HTML also, noting whether `type="module"`
         or not so could note whether there was a mismatch of export type in
-        the discovered files). Add tests.
+        the discovered files). Check `src` and text content. Add tests.
+        1. Try using `htmlparser2` only
     1. Enable CJS and AMD and add tests.
 1. Ensure has CLI (as well as programmatic) option to be able to pass list
     of files to `eslint`:

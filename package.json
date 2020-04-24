@@ -79,6 +79,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-unicorn": "^18.0.1",
     "esm": "^3.2.25",
+    "htmlparser2": "^4.1.0",
     "license-badger": "^0.14.2",
     "mocha": "^7.1.1",
     "mocha-badge-generator": "git+https://github.com/brettz9/mocha-badge-generator.git#thresholds",
