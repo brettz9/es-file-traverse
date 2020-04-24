@@ -47,15 +47,16 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
         1. Utilize import maps then return that result with file name/path
             (and module type used, e.g., if multiple module types
             are being queried).
-    1. Enable CJS and AMD.
+        1. Add tests.
     1. Iterate **script tags** in HTML also, noting whether `type="module"`
         or not so could note whether there was a mismatch of export type in
-        the discovered files).
+        the discovered files). Add tests.
+    1. Enable CJS and AMD and add tests.
 1. Ensure has CLI (as well as programmatic) option to be able to pass list
     of files to `eslint`:
     <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
-1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
-    when done (dogfooding with linting badge)
+    1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
+        when usable (dogfooding with linting badge)
 
 ## To-dos
 
