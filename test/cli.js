@@ -72,6 +72,27 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) - amd relying on browser algorithm',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/amd-define.js',
+        '--amd'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/amd-define.js',
+        '/test/fixtures/amd2.js',
+        '/test/fixtures/amd3.js',
+        '/test/fixtures/amd4.js',
+        '/test/fixtures/amd5.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) - relying on `babelEslintOptions.sourceType`',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [

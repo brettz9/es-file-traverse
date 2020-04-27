@@ -56,18 +56,15 @@ const cjs = 'CallExpression' +
 const amdDefine = 'CallExpression' +
   '[callee.type="Identifier"]' +
     '[callee.name="define"][arguments.length=2]' +
-    ':has(ArrayExpression)';
+    '> ArrayExpression > Literal';
 
 const amdRequire = 'CallExpression' +
 '[callee.type="Identifier"]' +
-  '[callee.name="require"][arguments.length=2]' +
-    ':has(' +
-      'ArrayExpression:has(' +
-        'Literal:not(' +
-          ':matches([value="string"],[value="require"],[value="exports"])' +
-        ')' +
-      ')' +
-    ')';
+  '[callee.name="require"][arguments.length=2] >' +
+    'ArrayExpression >' +
+      'Literal:not(' +
+        ':matches([value="string"],[value="require"],[value="exports"])' +
+      ')';
 
 const amd = `:matches(${amdDefine},${amdRequire})`;
 
