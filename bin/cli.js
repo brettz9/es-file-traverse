@@ -18,7 +18,12 @@ if (!optionDefinitions) { // cliBasics handled
 }
 
 (async () => {
-const filesArr = await mainScript(optionDefinitions);
-// eslint-disable-next-line no-console
-console.log('filesArr', filesArr);
+try {
+  const filesArr = await mainScript(optionDefinitions);
+  // eslint-disable-next-line no-console
+  console.log('filesArr', filesArr);
+} catch (err) {
+  // eslint-disable-next-line no-console
+  console.error(err);
+}
 })();
