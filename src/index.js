@@ -72,8 +72,8 @@ const amd = `:matches(${amdDefine},${amdRequire})`;
 
 const selectorMap = new Map([
   ['esm', esmImports],
-  ['cjs', cjs],
-  ['amd', amd]
+  ['cjs', esquery.parse(cjs)],
+  ['amd', esquery.parse(amd)]
 ]);
 
 const serialOrParallel = (serial) => {
