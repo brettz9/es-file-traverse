@@ -18,7 +18,9 @@ describe('CLI', function () {
 
   it('esFileTraverse binary (file)', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
-      '--file', './test/fixtures/main.js'
+      '--file', './test/fixtures/main.js',
+      '--node',
+      '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
     expect(stdout).to.contain('filesArr');
@@ -33,7 +35,9 @@ describe('CLI', function () {
 
   it('esFileTraverse binary (file) handles cyclic', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
-      '--file', './test/fixtures/cyclic1.js'
+      '--file', './test/fixtures/cyclic1.js',
+      '--node',
+      '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
     expect(stdout).to.contain('filesArr');
@@ -48,7 +52,9 @@ describe('CLI', function () {
   it('esFileTraverse binary (file) can load serially', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
       '--serial',
-      '--file', './test/fixtures/multi-imports.js'
+      '--file', './test/fixtures/multi-imports.js',
+      '--node',
+      '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
     expect(stdout).to.contain('filesArr');
@@ -69,10 +75,26 @@ describe('CLI', function () {
     });
   });
 
+  it(
+    'esFileTraverse binary (file) throws with bad file name',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--cwd', dirname(new URL(import.meta.url).pathname),
+        '--file', './fixtures/has-bad-import.js',
+        '--node',
+        '--defaultSourceType', 'module'
+      ]);
+      expect(stderr).to.contain('Cannot find module');
+      expect(stdout).to.equal('');
+    }
+  );
+
   it('esFileTraverse binary (file) with callback module', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
       '--file', './test/fixtures/main.js',
-      '--callback', './test/fixtures/callback.js'
+      '--callback', './test/fixtures/callback.js',
+      '--node',
+      '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
     expect(stdout).to.contain('filesArr');

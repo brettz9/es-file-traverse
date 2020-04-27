@@ -16,7 +16,9 @@ describe('esFileTraverse', function () {
       callback () {
         callbackRan = true;
       },
-      file: './fixtures/main.js'
+      file: './fixtures/main.js',
+      node: true,
+      defaultSourceType: 'module'
     });
     expect(callbackRan).to.be.true;
     [
@@ -33,8 +35,10 @@ describe('esFileTraverse', function () {
   it('throws with bad file name', function () {
     return expect(esFileTraverse({
       cwd: dirname(new URL(import.meta.url).pathname),
-      file: './fixtures/has-bad-import.js'
-    })).to.be.rejectedWith(Error);
+      file: './fixtures/has-bad-import.js',
+      node: true,
+      defaultSourceType: 'module'
+    })).to.be.rejectedWith(Error, /Cannot find module/u);
   });
 });
 
