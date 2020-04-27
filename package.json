@@ -51,7 +51,9 @@
     "file-fetch": "^1.4.1",
     "find-package-json": "^1.2.0",
     "globby": "^11.0.0",
+    "got": "^11.0.2",
     "htmlparser2": "^4.1.0",
+    "node-fetch": "^2.6.0",
     "resolve": "^1.17.0"
   },
   "devDependencies": {

@@ -70,6 +70,29 @@ describe('CLI', function () {
     }
   );
 
+  /*
+  it(
+    'esFileTraverse binary (file) and html',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/entry.html'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/script1.js',
+        '/test/fixtures/file1.js',
+        '/test/fixtures/file2.js',
+        '/test/fixtures/script2.js',
+        '/test/fixtures/import.mjs',
+        '/test/fixtures/import2.mjs'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+  */
+
   it(
     'esFileTraverse binary (file) and cjs by file extension (and `--noEsm`)',
     async function () {

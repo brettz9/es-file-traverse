@@ -1,16 +1,20 @@
 'use strict';
 
 const {createReadStream} = require('fs');
+const stream = require('stream');
+const {promisify} = require('util');
 const {dirname, join} = require('path');
 
 require('array-flat-polyfill');
 const {parseForESLint} = require('babel-eslint');
 const esquery = require('esquery');
 const globby = require('globby');
-// eslint-disable-next-line no-shadow
-const fetch = require('file-fetch');
+const fileFetch = require('file-fetch');
+const browserFetch = require('node-fetch');
 const htmlparser2 = require('htmlparser2');
 const packageJsonFinder = require('find-package-json');
+
+const pipeline = promisify(stream.pipeline);
 
 const nodeResolve = require('./resolve');
 
@@ -94,11 +98,17 @@ function findNearestPackageJsonType (file) {
   return (value && value.type) || null;
 }
 
-const browserResolver = (file, {basedir, html}) => {
+const browserResolver = (file, {basedir, baseURL, html}) => {
   if (!html && (/^[^/.]/u).test(file)) {
     throw new Error('Browser module imports must begin with `/` or `.`');
   }
-  return new URL(file, `http://localhost${basedir}/`).pathname;
+  const url = new URL(
+    file,
+    baseURL ||
+      // Just simulating a URL for path resolution only
+      `http://localhost${basedir}/`
+  );
+  return baseURL ? url.href : url.pathname;
 };
 // For polymorphism with `resolve`
 browserResolver.sync = (...args) => {
@@ -119,6 +129,7 @@ async function traverseJSText ({
   fullPath,
   callback,
   cwd,
+  baseURL,
   resolvedMap = new Map(),
   serial,
   noEsm,
@@ -203,10 +214,20 @@ async function traverseJSText ({
           }
         );
         */
-        const resolvedPath = resolver.sync(node.value, {
-          basedir: dirname(fullPath),
-          html
-        });
+        const resolvedPath = resolver.sync(
+          node.value,
+          nodeResolve
+            ? {
+              basedir: dirname(fullPath)
+            }
+            : {
+              baseURL,
+              basedir: baseURL
+                ? new URL(fullPath, baseURL)
+                : dirname(fullPath),
+              html
+            }
+        );
 
         resolvedSet.add(resolvedPath);
 
@@ -267,6 +288,7 @@ async function traverseJSText ({
 async function traverseJSFile ({
   file,
   cwd,
+  baseURL,
   node: nodeResolution,
   html = false,
   babelEslintOptions = {},
@@ -285,15 +307,26 @@ async function traverseJSFile ({
     paths: [cwd]
   });
   */
-  const fullPath = await resolver(file, {
-    html,
-    basedir: cwd
-  });
+  const fullPath = await resolver(
+    file,
+    nodeResolution
+      ? {
+        basedir: cwd
+      }
+      : {
+        html,
+        baseURL,
+        basedir: cwd
+      }
+  );
+  // console.error('fullPath', cwd, '::', html, '::', file, '::', fullPath);
 
   if (resolvedMap.has(fullPath)) {
     return resolvedMap;
   }
 
+  // eslint-disable-next-line no-shadow
+  const fetch = nodeResolution || !baseURL ? fileFetch : browserFetch;
   const res = await fetch(fullPath);
   const text = await res.text();
 
@@ -325,6 +358,7 @@ async function traverse ({
   serial = false,
   callback = null,
   cwd = process.cwd(),
+  baseURL = '',
   babelEslintOptions = {},
   node: nodeResolution = false,
   forceLanguage = null,
@@ -364,8 +398,8 @@ async function traverse ({
    */
   function traverseHTMLFile (htmlFile) {
     let lastName, lastScriptIsModule;
-    // eslint-disable-next-line promise/avoid-new
-    return new Promise((resolve, reject) => {
+    // eslint-disable-next-line promise/avoid-new, no-async-promise-executor
+    return new Promise(async (resolve, reject) => {
       const parserStream = new htmlparser2.WritableStream(
         {
           // onopentagname(name), onattribute(name, value), onclosetag(name),
@@ -393,7 +427,8 @@ async function traverse ({
               const sourceType = isModule ? 'module' : 'script';
               await traverseJSFile({
                 file: attribs.src,
-                cwd,
+                cwd: dirname(join(cwd, htmlFile)),
+                baseURL,
                 node: false,
                 html: true,
                 babelEslintOptions: {
@@ -422,7 +457,7 @@ async function traverse ({
               },
               fullPath: htmlFile,
               callback,
-              cwd,
+              cwd: dirname(join(cwd, htmlFile)),
               resolvedMap,
               serial,
               noEsm,
@@ -443,11 +478,26 @@ async function traverse ({
           decodeEntities: true
         }
       );
-      const htmlStream = createReadStream(htmlFile);
-      htmlStream.pipe(parserStream).on('finish', () => {
-        // eslint-disable-next-line no-console
-        console.log('done');
-      });
+
+      if (baseURL) {
+        // This really slows things down when not needed (if required globally)!
+        // eslint-disable-next-line node/global-require
+        const got = require('got');
+        await pipeline(
+          got.stream(new URL(htmlFile, baseURL).href),
+          parserStream
+        );
+      } else {
+        const htmlStream = createReadStream(htmlFile);
+        // eslint-disable-next-line promise/avoid-new
+        await new Promise((res, rej) => {
+          htmlStream.pipe(parserStream).on('finish', () => {
+            res();
+          });
+        });
+      }
+      // eslint-disable-next-line no-console
+      console.log('done');
     });
   }
 
