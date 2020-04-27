@@ -98,17 +98,17 @@ function findNearestPackageJsonType (file) {
   return (value && value.type) || null;
 }
 
-const browserResolver = (file, {basedir, baseURL, html}) => {
+const browserResolver = (file, {basedir, baseUrl, html}) => {
   if (!html && (/^[^/.]/u).test(file)) {
     throw new Error('Browser module imports must begin with `/` or `.`');
   }
   const url = new URL(
     file,
-    baseURL ||
+    baseUrl ||
       // Just simulating a URL for path resolution only
       `http://localhost${basedir}/`
   );
-  return baseURL ? url.href : url.pathname;
+  return baseUrl ? url.href : url.pathname;
 };
 // For polymorphism with `resolve`
 browserResolver.sync = (...args) => {
@@ -129,7 +129,7 @@ async function traverseJSText ({
   fullPath,
   callback,
   cwd,
-  baseURL,
+  baseUrl,
   resolvedMap = new Map(),
   serial,
   noEsm,
@@ -195,6 +195,8 @@ async function traverseJSText ({
     });
   }
 
+  const seriesOrParallel = serialOrParallel(serial);
+
   /**
    * @param {"esm"|"cjs"|"amd"} type
    * @returns {Promise<void>}
@@ -216,14 +218,14 @@ async function traverseJSText ({
         */
         const resolvedPath = resolver.sync(
           node.value,
-          nodeResolve
+          nodeResolution
             ? {
               basedir: dirname(fullPath)
             }
             : {
-              baseURL,
-              basedir: baseURL
-                ? new URL(fullPath, baseURL)
+              baseUrl,
+              basedir: baseUrl
+                ? new URL(fullPath, baseUrl)
                 : dirname(fullPath),
               html
             }
@@ -232,8 +234,9 @@ async function traverseJSText ({
         resolvedSet.add(resolvedPath);
 
         proms.push(traverseJSFile({
-          file: resolvedPath,
-          cwd,
+          // Don't use resolvedPath as will be added there
+          file: nodeResolution ? resolvedPath : node.value,
+          cwd: dirname(fullPath),
           node: nodeResolution,
           resolvedMap,
           babelEslintOptions,
@@ -245,6 +248,7 @@ async function traverseJSText ({
         }));
       }
     );
+
     resolvedMap.set(
       fullPath,
       resolvedSet
@@ -262,7 +266,7 @@ async function traverseJSText ({
         resolvedSet
       });
     }
-    await serialOrParallel(serial)(proms);
+    await seriesOrParallel(proms);
   }
 
   const resolvedSet = new Set();
@@ -288,7 +292,7 @@ async function traverseJSText ({
 async function traverseJSFile ({
   file,
   cwd,
-  baseURL,
+  baseUrl,
   node: nodeResolution,
   html = false,
   babelEslintOptions = {},
@@ -315,7 +319,7 @@ async function traverseJSFile ({
       }
       : {
         html,
-        baseURL,
+        baseUrl,
         basedir: cwd
       }
   );
@@ -326,7 +330,7 @@ async function traverseJSFile ({
   }
 
   // eslint-disable-next-line no-shadow
-  const fetch = nodeResolution || !baseURL ? fileFetch : browserFetch;
+  const fetch = nodeResolution || !baseUrl ? fileFetch : browserFetch;
   const res = await fetch(fullPath);
   const text = await res.text();
 
@@ -358,7 +362,7 @@ async function traverse ({
   serial = false,
   callback = null,
   cwd = process.cwd(),
-  baseURL = '',
+  baseUrl = '',
   babelEslintOptions = {},
   node: nodeResolution = false,
   forceLanguage = null,
@@ -396,17 +400,18 @@ async function traverse ({
    * @param {string} htmlFile
    * @returns {Promise<void>}
    */
-  function traverseHTMLFile (htmlFile) {
+  async function traverseHTMLFile (htmlFile) {
     let lastName, lastScriptIsModule;
-    // eslint-disable-next-line promise/avoid-new, no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
+    const proms = [];
+    // eslint-disable-next-line promise/avoid-new
+    await new Promise((resolve, reject) => {
       const parserStream = new htmlparser2.WritableStream(
         {
           // onopentagname(name), onattribute(name, value), onclosetag(name),
           //  onprocessinginstruction(name, data),
           //  oncomment, oncommentend, oncdatastart, oncdataend, onerror(err),
           //  onreset, onend
-          async onopentag (name, attribs) {
+          onopentag (name, attribs) {
             lastName = name;
             lastScriptIsModule = false;
             if (name === 'script') {
@@ -425,10 +430,10 @@ async function traverse ({
               }
 
               const sourceType = isModule ? 'module' : 'script';
-              await traverseJSFile({
+              proms.push(traverseJSFile({
                 file: attribs.src,
                 cwd: dirname(join(cwd, htmlFile)),
-                baseURL,
+                baseUrl,
                 node: false,
                 html: true,
                 babelEslintOptions: {
@@ -441,21 +446,22 @@ async function traverse ({
                 cjs: cjsModules,
                 amd: amdModules,
                 resolvedMap
-              });
+              }));
             }
           },
-          async ontext (text) {
+          ontext (text) {
             if (lastName !== 'script') {
               return;
             }
             const sourceType = lastScriptIsModule ? 'module' : 'script';
-            await traverseJSText({
+
+            proms.push(traverseJSText({
               text,
               babelEslintOptions: {
                 ...babelEslintOptions,
                 sourceType
               },
-              fullPath: htmlFile,
+              fullPath: join(cwd, htmlFile),
               callback,
               cwd: dirname(join(cwd, htmlFile)),
               resolvedMap,
@@ -465,13 +471,11 @@ async function traverse ({
               amd: amdModules,
               node: false,
               html: true
-            });
+            }));
           },
           onerror (err) {
+            // istanbul ignore next
             reject(err);
-          },
-          onend () {
-            resolve();
           }
         },
         {
@@ -479,35 +483,34 @@ async function traverse ({
         }
       );
 
-      if (baseURL) {
+      if (baseUrl) {
         // This really slows things down when not needed (if required globally)!
         // eslint-disable-next-line node/global-require
         const got = require('got');
-        await pipeline(
-          got.stream(new URL(htmlFile, baseURL).href),
+        return pipeline(
+          got.stream(new URL(htmlFile, baseUrl).href),
           parserStream
-        );
-      } else {
-        const htmlStream = createReadStream(htmlFile);
-        // eslint-disable-next-line promise/avoid-new
-        await new Promise((res, rej) => {
-          htmlStream.pipe(parserStream).on('finish', () => {
-            res();
-          });
-        });
+        ).then(resolve, reject);
       }
-      // eslint-disable-next-line no-console
-      console.log('done');
+      const htmlStream = createReadStream(htmlFile);
+      htmlStream.pipe(parserStream).on('finish', () => {
+        resolve();
+      });
+      return undefined;
     });
+    await Promise.all(proms);
+    // eslint-disable-next-line no-console
+    console.log('done');
   }
 
-  await serialOrParallel(serial)(
+  const seriesOrParallel = serialOrParallel(serial);
+  await seriesOrParallel(
     files.map(async (file) => {
       const ext = file.split('.').pop();
       if (forceLanguage === 'html' ||
         (!forceLanguage && htmlExtension.includes(ext))
       ) {
-        return traverseHTMLFile(file);
+        return await traverseHTMLFile(file);
       }
       if (forceLanguage === 'js' ||
         (!forceLanguage && jsExtension.includes(ext))
@@ -523,6 +526,7 @@ async function traverse ({
                 : defaultSourceType
           };
         }
+
         return traverseJSFile({
           file,
           cwd,

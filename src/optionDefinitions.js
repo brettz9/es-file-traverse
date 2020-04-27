@@ -42,7 +42,7 @@ const optionDefinitions = [
     typeLabel: '{underline path}'
   },
   {
-    name: 'baseURL', type: String,
+    name: 'baseUrl', type: String,
     description: 'Base URL for resolution of HTML scripts and imports. ' +
       'Defaults to empty string which allows for resolution based on `cwd` ' +
       '(or HTML file path), but if truthy, will expect an actual URL.',

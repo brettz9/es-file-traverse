@@ -1,4 +1,7 @@
+import http from 'http';
 import {resolve as pathResolve, dirname} from 'path';
+
+import {Server} from 'node-static';
 
 import spawnPromise from './utilities/spawnPromise.js';
 
@@ -70,7 +73,6 @@ describe('CLI', function () {
     }
   );
 
-  /*
   it(
     'esFileTraverse binary (file) and html',
     async function () {
@@ -91,7 +93,34 @@ describe('CLI', function () {
       });
     }
   );
-  */
+
+  it.only(
+    'esFileTraverse binary (file) and html with baseUrl',
+    async function () {
+      const file = new Server();
+      http.createServer((req, res) => {
+        req.addListener('end', () => {
+          file.serve(req, res);
+        }).resume();
+      }).listen(8001);
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/entry.html',
+        '--baseUrl', 'http://localhost:8001'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/script1.js',
+        '/test/fixtures/file1.js',
+        '/test/fixtures/file2.js',
+        '/test/fixtures/script2.js',
+        '/test/fixtures/import.mjs',
+        '/test/fixtures/import2.mjs'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
 
   it(
     'esFileTraverse binary (file) and cjs by file extension (and `--noEsm`)',
