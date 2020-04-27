@@ -53,6 +53,25 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) - cjs relying on browser algorithm',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs.js',
+        '--cjs'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/cjs.js',
+        '/test/fixtures/cjs2.js',
+        '/test/fixtures/cjs3.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) - relying on `babelEslintOptions.sourceType`',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
