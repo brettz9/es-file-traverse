@@ -26,6 +26,7 @@
   },
   "nyc": {
     "reporter": [
+      "lcov",
       "json-summary",
       "text"
     ]
