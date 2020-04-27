@@ -103,7 +103,7 @@ const optionDefinitions = [
     typeLabel: '{underline extension string}'
   },
   {
-    name: 'babelESLintOptions', type: String,
+    name: 'babelEslintOptions', type: String,
     description: 'Options (including `babelOptions` if desired) to pass to ' +
       '`babel-eslint`. Defaults to an object with only an auto-determined ' +
       '`filePath` being passed in and `sourceType` set to "module" by ' +

@@ -110,7 +110,7 @@ browserResolver.sync = (...args) => {
  */
 async function traverseJSText ({
   text,
-  babelESLintOptions,
+  babelEslintOptions,
   fullPath,
   callback,
   cwd,
@@ -123,21 +123,17 @@ async function traverseJSText ({
 }) {
   const resolver = nodeResolution ? nodeResolve : browserResolver;
 
-  if (typeof babelESLintOptions === 'string') {
-    babelESLintOptions = JSON.parse(babelESLintOptions);
-  }
-
   const {ast} = parseForESLint(text, {
     filePath: fullPath,
-    sourceType: babelESLintOptions.sourceType === 'module' ||
+    sourceType: babelEslintOptions.sourceType === 'module' ||
         (!noEsm && fullPath.endsWith('.mjs'))
       ? 'module'
-      : babelESLintOptions.sourceType === 'script' ||
+      : babelEslintOptions.sourceType === 'script' ||
         (cjsModules && fullPath.endsWith('.cjs'))
         ? 'script'
         : undefined,
 
-    ...babelESLintOptions
+    ...babelEslintOptions
     // babelOptions: {
     //   cwd, root, rootMode, envName, configFile, babelrc, babelrcRoots,
     //   extends, env, overrides, test, include, exclude, ignore, only
@@ -203,7 +199,7 @@ async function traverseJSText ({
           cwd,
           node: nodeResolution,
           resolvedMap,
-          babelESLintOptions,
+          babelEslintOptions,
           callback,
           serial,
           noEsm,
@@ -254,7 +250,7 @@ async function traverseJSFile ({
   file,
   cwd,
   node: nodeResolution,
-  babelESLintOptions,
+  babelEslintOptions,
   callback,
   serial,
   noEsm,
@@ -283,7 +279,7 @@ async function traverseJSFile ({
 
   await traverseJSText({
     text,
-    babelESLintOptions,
+    babelEslintOptions,
     fullPath,
     callback,
     cwd,
@@ -308,7 +304,7 @@ async function traverse ({
   serial = false,
   callback = null,
   cwd = process.cwd(),
-  babelESLintOptions = {},
+  babelEslintOptions = {},
   node: nodeResolution = false,
   forceLanguage = null,
   jsExtension = ['js', 'cjs', 'mjs'],
@@ -323,6 +319,10 @@ async function traverse ({
     throw new Error(
       'You must specify `noEsm` as `true` or set `cjs` or `amd` to true'
     );
+  }
+
+  if (typeof babelEslintOptions === 'string') {
+    babelEslintOptions = JSON.parse(babelEslintOptions);
   }
 
   const resolvedMap = new Map();
@@ -373,8 +373,8 @@ async function traverse ({
                 file: attribs.src,
                 cwd,
                 node: false,
-                babelESLintOptions: {
-                  ...babelESLintOptions,
+                babelEslintOptions: {
+                  ...babelEslintOptions,
                   sourceType: isModule ? 'module' : 'script'
                 },
                 callback,
@@ -393,8 +393,8 @@ async function traverse ({
             const sourceType = lastScriptIsModule ? 'module' : 'script';
             await traverseJSText({
               text,
-              babelESLintOptions: {
-                ...babelESLintOptions,
+              babelEslintOptions: {
+                ...babelEslintOptions,
                 sourceType
               },
               fullPath: htmlFile,
@@ -454,8 +454,8 @@ async function traverse ({
           cwd,
           node: nodeResolution,
           resolvedMap,
-          babelESLintOptions: {
-            ...babelESLintOptions,
+          babelEslintOptions: {
+            ...babelEslintOptions,
             ...possibleSourceType
             // Todo: Add override of sourceType if detecting package.json `type`
           },
