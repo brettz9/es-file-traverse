@@ -38,7 +38,7 @@ const optionDefinitions = [
   },
   {
     name: 'cwd', type: String,
-    descpription: 'Current working directory; defaults to `process.cwd()`',
+    description: 'Current working directory; defaults to `process.cwd()`',
     typeLabel: '{underline path}'
   },
   {
