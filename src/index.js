@@ -97,7 +97,7 @@ function findNearestPackageJsonType (file) {
 }
 
 const browserResolver = (file, {basedir}) => {
-  return new URL(file, basedir).href;
+  return new URL(file, `http://localhost${basedir}/`).pathname;
 };
 // For polymorphism with `resolve`
 browserResolver.sync = (...args) => {
@@ -273,6 +273,7 @@ async function traverseJSFile ({
   const fullPath = await resolver(file, {
     basedir: cwd
   });
+
   if (resolvedMap.has(fullPath)) {
     return resolvedMap;
   }

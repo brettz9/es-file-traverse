@@ -33,6 +33,25 @@ describe('CLI', function () {
     });
   });
 
+  it(
+    'esFileTraverse binary (file) - not relying on Node algorithm',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/main.js',
+        '--defaultSourceType', 'module'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/main.js',
+        '/test/fixtures/file1.js',
+        '/test/fixtures/file2.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
   it('esFileTraverse binary (file) handles cyclic', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
       '--file', './test/fixtures/cyclic1.js',
@@ -94,9 +113,10 @@ describe('CLI', function () {
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
         '--cwd', dirname(new URL(import.meta.url).pathname),
-        '--file', './fixtures/has-bad-import.js'
+        '--file', './fixtures/has-bad-import.js',
+        '--defaultSourceType', 'module'
       ]);
-      expect(stderr).to.contain('Invalid URL:');
+      expect(stderr).to.contain('File not found');
       expect(stdout).to.equal('');
     }
   );
