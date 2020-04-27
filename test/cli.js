@@ -89,6 +89,18 @@ describe('CLI', function () {
     }
   );
 
+  it(
+    'esFileTraverse binary (file) throws with bad file URL',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--cwd', dirname(new URL(import.meta.url).pathname),
+        '--file', './fixtures/has-bad-import.js'
+      ]);
+      expect(stderr).to.contain('Invalid URL:');
+      expect(stdout).to.equal('');
+    }
+  );
+
   it('esFileTraverse binary (file) with callback module', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
       '--file', './test/fixtures/main.js',
