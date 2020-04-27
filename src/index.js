@@ -19,20 +19,20 @@ const nodeResolve = require('./resolve');
 
 // `import * as b from './abc.js';`
 // `import {b} from './abc.js';`
-const importDeclaration = 'ImportDeclaration[source.value]';
+const importDeclaration = 'ImportDeclaration[source.value] > Literal';
 
 // export {b} from './c.js';
-const exportNamedDeclaration = 'ExportNamedDeclaration[source.value]';
+const exportNamedDeclaration = 'ExportNamedDeclaration[source.value] > Literal';
 
 // export * as b from './c.js';
-const exportAllDeclaration = 'ExportAllDeclaration[source.value]';
+const exportAllDeclaration = 'ExportAllDeclaration[source.value] > Literal';
 
 const dynamicImport =
   ':matches(' +
     // `eslint-plugin-import` checks for this
     'CallExpression' +
-      '[callee.type="import"][arguments.length=1],' +
-    'ImportExpression' +
+      '[callee.type="import"][arguments.length=1] > Literal,' +
+    'ImportExpression > Literal' +
   // From `eslint-plugin-import` for std::string?
   // ':has(Literal[value!="string"])';
   ')';
@@ -48,7 +48,8 @@ const esmImports = esquery.parse(
 
 // Inspired by: https://github.com/benmosher/eslint-plugin-import/blob/master/utils/moduleVisitor.js#L4-L13
 const cjs = 'CallExpression' +
-  '[callee.type="Identifier"][callee.name="require"][arguments.length=1]';
+  '[callee.type="Identifier"][callee.name="require"][arguments.length=1] ' +
+    '> Literal';
   // From `eslint-plugin-import` for std::string?
   // ':has(Literal[value!="string"])';
 
@@ -188,7 +189,7 @@ async function traverseJSText ({
           }
         );
         */
-        const resolvedPath = resolver.sync(node.source.value, {
+        const resolvedPath = resolver.sync(node.value, {
           basedir: dirname(fullPath)
         });
 
