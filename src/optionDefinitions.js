@@ -58,10 +58,11 @@ const optionDefinitions = [
     description: 'When checking non-HTML JavaScript files (and ' +
       '`no-check-package-json` is not set), and no `package.json` `type` ' +
       'is found, this will determine the source type. Overrides ' +
-      '`babelESLintOptions.sourceType` for such files unless ' +
+      '`babelESLintOptions.sourceType` (as does presence of "mjs" or ' +
+      '"cjs" extension with `node`) for such files unless ' +
       '`no-check-package-json` is set. Defaults to ' +
-      '"script" as per current Node behavior, but we may change this ' +
-      'default in the future if Node changes.',
+      '`undefined`, but is overridden by "cjs" or "mjs" extensions ' +
+      '`with `node`.',
     typeLabel: '{underline "module"|"script"}'
   },
   {

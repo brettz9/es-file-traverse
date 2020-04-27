@@ -16,7 +16,7 @@ describe('CLI', function () {
     expect(stdout).to.contain('es-file-traverse');
   });
 
-  it('esFileTraverse binary (file)', async function () {
+  it('esFileTraverse binary (file) and explicit modules', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
       '--file', './test/fixtures/main.js',
       '--node',
@@ -32,6 +32,63 @@ describe('CLI', function () {
       expect(stdout).to.include(expectedFile);
     });
   });
+
+  it(
+    'esFileTraverse binary (file) and modules by file extension',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/import.mjs',
+        '--node'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/import.mjs',
+        '/test/fixtures/import2.mjs'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) and cjs by file extension',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs.cjs',
+        '--node',
+        '--cjs'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/cjs.cjs',
+        '/test/fixtures/cjs2.cjs'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) and cjs by file extension (and `--noEsm`)',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs.cjs',
+        '--node',
+        '--cjs',
+        '--no-esm'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/cjs.cjs',
+        '/test/fixtures/cjs2.cjs'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
 
   it('esFileTraverse binary (file) with glob', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [

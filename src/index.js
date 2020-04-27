@@ -125,15 +125,24 @@ async function traverseJSText ({
 }) {
   const resolver = nodeResolution ? nodeResolve : browserResolver;
 
+  const sourceType = babelEslintOptions.sourceType === 'module' ||
+      (nodeResolution && !noEsm && fullPath.endsWith('.mjs'))
+    ? 'module'
+    : babelEslintOptions.sourceType === 'script' ||
+      (nodeResolution && cjsModules && fullPath.endsWith('.cjs'))
+      ? 'script'
+      : undefined;
+
+  if (sourceType) {
+    babelEslintOptions = {
+      ...babelEslintOptions,
+      sourceType
+    };
+  }
+
   const {ast} = parseForESLint(text, {
     filePath: fullPath,
-    sourceType: babelEslintOptions.sourceType === 'module' ||
-        (!noEsm && fullPath.endsWith('.mjs'))
-      ? 'module'
-      : babelEslintOptions.sourceType === 'script' ||
-        (cjsModules && fullPath.endsWith('.cjs'))
-        ? 'script'
-        : undefined,
+    sourceType,
 
     ...babelEslintOptions
     // babelOptions: {
@@ -287,12 +296,12 @@ async function traverseJSFile ({
     fullPath,
     callback,
     cwd,
+    node: nodeResolution,
     resolvedMap,
     serial,
     noEsm,
     cjs: cjsModules,
-    amd: amdModules,
-    node: nodeResolution
+    amd: amdModules
   });
 
   return resolvedMap;
@@ -317,7 +326,7 @@ async function traverse ({
   cjs: cjsModules = false,
   amd: amdModules = false,
   noCheckPackageJson,
-  defaultSourceType = 'script'
+  defaultSourceType = undefined
 }) {
   if (noEsm && !cjsModules && !amdModules) {
     throw new Error(
@@ -373,13 +382,14 @@ async function traverse ({
                 return;
               }
 
+              const sourceType = isModule ? 'module' : 'script';
               await traverseJSFile({
                 file: attribs.src,
                 cwd,
                 node: false,
                 babelEslintOptions: {
                   ...babelEslintOptions,
-                  sourceType: isModule ? 'module' : 'script'
+                  sourceType
                 },
                 callback,
                 serial,
