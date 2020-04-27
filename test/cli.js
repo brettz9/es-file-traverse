@@ -72,6 +72,20 @@ describe('CLI', function () {
     }
   );
 
+  it(
+    'esFileTraverse binary (file) with `jsExtension` and no matches',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/main.js',
+        '--node',
+        '--jsExtension', 'ajs',
+        '--defaultSourceType', 'module'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr []');
+    }
+  );
+
   it('esFileTraverse binary (file) handles cyclic', async function () {
     const {stdout, stderr} = await spawnPromise(cliPath, [
       '--file', './test/fixtures/cyclic1.js',
