@@ -33,6 +33,55 @@ describe('CLI', function () {
     });
   });
 
+  it('esFileTraverse binary (file) with glob', async function () {
+    const {stdout, stderr} = await spawnPromise(cliPath, [
+      '--file', './test/fixtures/ma*.js',
+      '--node',
+      '--defaultSourceType', 'module'
+    ], 5000);
+    expect(stderr).to.equal('');
+    expect(stdout).to.contain('filesArr');
+    [
+      '/test/fixtures/main.js',
+      '/test/fixtures/file1.js',
+      '/test/fixtures/file2.js'
+    ].forEach((expectedFile) => {
+      expect(stdout).to.include(expectedFile);
+    });
+  });
+
+  it('esFileTraverse binary (file) with no glob', async function () {
+    const {stdout, stderr} = await spawnPromise(cliPath, [
+      '--file', './test/fixtures/main.js',
+      '--node',
+      '--noGlobs',
+      '--defaultSourceType', 'module'
+    ], 5000);
+    expect(stderr).to.equal('');
+    expect(stdout).to.contain('filesArr');
+    [
+      '/test/fixtures/main.js',
+      '/test/fixtures/file1.js',
+      '/test/fixtures/file2.js'
+    ].forEach((expectedFile) => {
+      expect(stdout).to.include(expectedFile);
+    });
+  });
+
+  it(
+    'esFileTraverse binary (file) erring given use of glob with `noGlobs`',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/ma*.js',
+        '--node',
+        '--noGlobs',
+        '--defaultSourceType', 'module'
+      ], 5000);
+      expect(stderr).to.contain('Cannot find module');
+      expect(stdout).to.equal('');
+    }
+  );
+
   it(
     'esFileTraverse binary (file) - relying on browser algorithm',
     async function () {
