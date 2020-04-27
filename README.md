@@ -44,7 +44,6 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 
 1. **Add tests**
     1. `package.json` type/cjs/mjs and force type option
-    1. browser-only resolve
     1. script tags (src and text)
     1. CJS and AMD
 1. Ensure has CLI (as well as programmatic) option to be able to pass **list
