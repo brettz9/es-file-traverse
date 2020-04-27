@@ -53,7 +53,7 @@ describe('CLI', function () {
   );
 
   it(
-    'esFileTraverse binary (file) - cjs relying on browser algorithm',
+    'esFileTraverse binary (file) - cjs',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
         '--file', './test/fixtures/cjs.js',
@@ -65,6 +65,41 @@ describe('CLI', function () {
         '/test/fixtures/cjs.js',
         '/test/fixtures/cjs2.js',
         '/test/fixtures/cjs3.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - cjs relying on package-json for type',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/package-json-script/cjs.js',
+        '--cjs'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/package-json-script/cjs.js',
+        '/test/fixtures/package-json-script/cjs2.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - relying on package-json for module type',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/package-json-module/import.js'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('filesArr');
+      [
+        '/test/fixtures/package-json-module/import.js',
+        '/test/fixtures/package-json-module/import2.js'
       ].forEach((expectedFile) => {
         expect(stdout).to.include(expectedFile);
       });
