@@ -103,16 +103,20 @@ browserResolver.sync = (...args) => {
 };
 
 /**
+* @typedef {Map<string,Set<string>>} ResolvedMap
+*/
+
+/**
  * @param {ESFileTraverseOptionDefinitions} config
- * @returns {Promise<void>}
+ * @returns {Promise<ResolvedMap>}
  */
 async function traverseJSText ({
   text,
-  babelEslintOptions,
+  babelEslintOptions = {},
   fullPath,
   callback,
   cwd,
-  resolvedMap,
+  resolvedMap = new Map(),
   serial,
   noEsm,
   cjs: cjsModules,
@@ -238,17 +242,19 @@ async function traverseJSText ({
   if (amdModules) {
     await esqueryTraverse('amd');
   }
+
+  return resolvedMap;
 }
 
 /**
  * @param {ESFileTraverseOptionDefinitions} config
- * @returns {Promise<Map>}
+ * @returns {Promise<ResolvedMap>}
  */
 async function traverseJSFile ({
   file,
   cwd,
   node: nodeResolution,
-  babelEslintOptions,
+  babelEslintOptions = {},
   callback,
   serial,
   noEsm,
@@ -476,4 +482,6 @@ async function traverse ({
   )];
 }
 
-module.exports = traverse;
+exports.traverseJSText = traverseJSText;
+exports.traverseJSFile = traverseJSFile;
+exports.traverse = traverse;

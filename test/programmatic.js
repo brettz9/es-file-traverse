@@ -3,7 +3,10 @@ import {dirname} from 'path';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import esFileTraverse from '../src/index.js';
+import {
+  traverse as esFileTraverse,
+  traverseJSFile, traverseJSText
+} from '../src/index.js';
 import resolve from '../src/resolve.js';
 
 chai.use(chaiAsPromised);
@@ -39,6 +42,36 @@ describe('esFileTraverse', function () {
       node: true,
       defaultSourceType: 'module'
     })).to.be.rejectedWith(Error, /Cannot find module/u);
+  });
+});
+
+describe('traverseJSFile', function () {
+  it('traverseJSFile', async function () {
+    const map = await traverseJSFile({
+      cwd: dirname(new URL(import.meta.url).pathname),
+      file: './fixtures/main.js',
+      node: true,
+      defaultSourceType: 'module'
+    });
+    expect(map).to.be.a('Map');
+  });
+});
+
+describe('traverseJSText', function () {
+  it('traverseJSText', async function () {
+    const map = await traverseJSText({
+      cwd: dirname(new URL(import.meta.url).pathname),
+      fullPath:
+        `${dirname(new URL(import.meta.url).pathname)}/fixtures/main.js`,
+      text: `
+      import './file1.js';
+
+      require('path');
+      `,
+      node: true,
+      defaultSourceType: 'module'
+    });
+    expect(map).to.be.a('Map');
   });
 });
 

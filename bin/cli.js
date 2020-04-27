@@ -3,7 +3,7 @@
 
 const {join} = require('path');
 const {cliBasics} = require('command-line-basics');
-const mainScript = require('../src/index.js');
+const {traverse: mainScript} = require('../src/index.js');
 
 const optionDefinitions = cliBasics(
   join(__dirname, '../src/optionDefinitions.js'), {
