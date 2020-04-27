@@ -129,6 +129,19 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) throws with bad module combinations',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--cwd', dirname(new URL(import.meta.url).pathname),
+        '--file', './test/fixtures/main.js',
+        '--no-esm'
+      ]);
+      expect(stderr).to.contain('You must specify `noEsm` as `true` or ');
+      expect(stdout).to.equal('');
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) throws with bad file URL',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
