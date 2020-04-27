@@ -42,17 +42,13 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 
 ## Immediate to-dos
 
-1. Modes
-    1. Add **option to force type** rather than **relying on extensions**
-        (cjs, mjs, js or htm/html), including **script tags**
-    1. Option to parse **`type: 'module'`** in `package.json`
-    1. **Add tests**
-        1. package.json type/cjs/mjs and force type option
-        1. browser-only resolve
-        1. script tags (src and text)
-        1. CJS and AMD.
-1. Ensure has CLI (as well as programmatic) option to be able to pass list
-    of files to `eslint`:
+1. **Add tests**
+    1. `package.json` type/cjs/mjs and force type option
+    1. browser-only resolve
+    1. script tags (src and text)
+    1. CJS and AMD
+1. Ensure has CLI (as well as programmatic) option to be able to pass **list
+    of files to `eslint`**:
     <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
     1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
         when usable (dogfooding with linting badge)
