@@ -94,7 +94,10 @@ function findNearestPackageJsonType (file) {
   return (value && value.type) || null;
 }
 
-const browserResolver = (file, {basedir}) => {
+const browserResolver = (file, {basedir, html}) => {
+  if (!html && (/^[^/.]/u).test(file)) {
+    throw new Error('Browser module imports must begin with `/` or `.`');
+  }
   return new URL(file, `http://localhost${basedir}/`).pathname;
 };
 // For polymorphism with `resolve`
@@ -121,7 +124,8 @@ async function traverseJSText ({
   noEsm,
   cjs: cjsModules,
   amd: amdModules,
-  node: nodeResolution
+  node: nodeResolution,
+  html = false
 }) {
   const resolver = nodeResolution ? nodeResolve : browserResolver;
 
@@ -200,7 +204,8 @@ async function traverseJSText ({
         );
         */
         const resolvedPath = resolver.sync(node.value, {
-          basedir: dirname(fullPath)
+          basedir: dirname(fullPath),
+          html
         });
 
         resolvedSet.add(resolvedPath);
@@ -263,6 +268,7 @@ async function traverseJSFile ({
   file,
   cwd,
   node: nodeResolution,
+  html = false,
   babelEslintOptions = {},
   callback,
   serial,
@@ -280,6 +286,7 @@ async function traverseJSFile ({
   });
   */
   const fullPath = await resolver(file, {
+    html,
     basedir: cwd
   });
 
@@ -297,6 +304,7 @@ async function traverseJSFile ({
     callback,
     cwd,
     node: nodeResolution,
+    html,
     resolvedMap,
     serial,
     noEsm,
@@ -387,6 +395,7 @@ async function traverse ({
                 file: attribs.src,
                 cwd,
                 node: false,
+                html: true,
                 babelEslintOptions: {
                   ...babelEslintOptions,
                   sourceType
@@ -419,7 +428,8 @@ async function traverse ({
               noEsm,
               cjs: cjsModules,
               amd: amdModules,
-              node: false
+              node: false,
+              html: true
             });
           },
           onerror (err) {

@@ -324,6 +324,20 @@ describe('CLI', function () {
   );
 
   it(
+    'should err with import paths that would work as scripts but ' +
+      'are not valid imports',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--cwd', dirname(new URL(import.meta.url).pathname),
+        '--file', './fixtures/bad-esm-import.js',
+        '--defaultSourceType', 'module'
+      ]);
+      expect(stderr).to.contain('Browser module imports must begin with');
+      expect(stdout).to.equal('');
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) throws with bad module combinations',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
