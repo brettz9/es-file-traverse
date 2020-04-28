@@ -21,7 +21,7 @@
 
 # es-file-traverse
 
-**This project is only minimally functional and is untested!**
+**This project is not fully tested!**
 
 <!--
 ## Installation
