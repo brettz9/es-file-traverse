@@ -93,8 +93,8 @@ const optionDefinitions = [
   },
   {
     name: 'htmlExtension', type: String, multiple: true,
-    description: 'Extension(s) to be treated as HTML. Defaults to "htm" and ' +
-      '"html".',
+    description: 'Extension(s) to be treated as (static) HTML. Defaults ' +
+      'to "htm" and "html".',
     typeLabel: '{underline extension string}'
   },
   {

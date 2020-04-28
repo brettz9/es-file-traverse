@@ -14,6 +14,7 @@
     "cli": "node ./bin/cli.js",
     "help": "node ./bin/cli.js --help",
     "version": "node ./bin/cli.js --version",
+    "cli-lint": "",
     "cli-example": "npm run cli -- --file=./test/fixtures/main.js",
     "eslint": "eslint --ext=js,md,html .",
     "lint": "npm run eslint",
