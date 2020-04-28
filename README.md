@@ -78,6 +78,10 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
         a native `node_mod_a`, should use fixed paths for child processes.
         Could, however, whitelist certain trusted native executables, albeit
         with a potential risk of namespace conflicts.
+    1. Esp. if ESLint started supporting linting of URLs, we could
+        provide **loading of HTML from a server** (as with a `baseUrl`; see
+        commit history for a partial attempt); would return URLs instead
+        of files as well.
 1. Uses elsewhere:
     1. **Linter**: Propose this traversal mechanism as a **command line
         option for eslint itself**, esp. if get as a working demo (in

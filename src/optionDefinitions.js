@@ -42,13 +42,6 @@ const optionDefinitions = [
     typeLabel: '{underline path}'
   },
   {
-    name: 'baseUrl', type: String,
-    description: 'Base URL for resolution of HTML scripts and imports. ' +
-      'Defaults to empty string which allows for resolution based on `cwd` ' +
-      '(or HTML file path), but if truthy, will expect an actual URL.',
-    typeLabel: '{underline base URL}'
-  },
-  {
     name: 'node', type: Boolean,
     description: 'If assuming a Node.js environment (or one otherwise using ' +
       'the Node resolution algorithm). Will not be used on html files. ' +

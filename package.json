@@ -51,9 +51,7 @@
     "file-fetch": "^1.4.1",
     "find-package-json": "^1.2.0",
     "globby": "^11.0.0",
-    "got": "^11.0.2",
     "htmlparser2": "^4.1.0",
-    "node-fetch": "^2.6.0",
     "resolve": "^1.17.0"
   },
   "devDependencies": {
@@ -88,7 +86,6 @@
     "mocha": "^7.1.1",
     "mocha-badge-generator": "git+https://github.com/brettz9/mocha-badge-generator.git#thresholds",
     "mocha-multi-reporters": "git+https://github.com/brettz9/mocha-multi-reporters.git#promise-waiting",
-    "node-static": "^0.7.11",
     "npm-run-all": "^4.1.5",
     "nyc": "^15.0.1",
     "typescript": "^3.8.3"
