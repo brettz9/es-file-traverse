@@ -238,6 +238,35 @@ describe('CLI', function () {
       ].forEach((expectedFile) => {
         expect(stdout).to.include(expectedFile);
       });
+      [
+        'path',
+        '/test/fixtures/package-json-script/package.json'
+      ].forEach((unexpectedItem) => {
+        expect(stdout).to.not.include(unexpectedItem);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - cjs, including builtins and JSON',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs.js',
+        '--node',
+        '--cjs',
+        '--includeType', 'json',
+        '--includeType', 'builtin'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        '/test/fixtures/cjs.js',
+        '/test/fixtures/cjs2.js',
+        '/test/fixtures/cjs3.js',
+        'path',
+        '/test/fixtures/package-json-script/package.json'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
     }
   );
 

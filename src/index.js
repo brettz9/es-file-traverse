@@ -225,13 +225,12 @@ async function traverseJSText ({
             }
         );
 
-        resolvedSet.add(resolvedPath);
-
         proms.push(traverseJSFile({
-          // Don't use resolvedPath as will be added there
+          // Don't use resolvedPath for non-Node as will be added there
           file: nodeResolution ? resolvedPath : node.value,
           cwd: dirname(fullPath),
           node: nodeResolution,
+          resolvedSet,
           resolvedMap,
           babelEslintOptions,
           callback,
@@ -294,6 +293,7 @@ async function traverseJSFile ({
   noEsm,
   cjs: cjsModules,
   amd: amdModules,
+  resolvedSet,
   resolvedMap = new Map()
 }) {
   const resolver = nodeResolution ? nodeResolve : browserResolver;
@@ -339,6 +339,10 @@ async function traverseJSFile ({
     jsonSet.add(fullPath);
     resolvedMap.set('json', jsonSet);
     return resolvedMap;
+  }
+
+  if (resolvedSet) {
+    resolvedSet.add(file);
   }
 
   const text = await res.text();
@@ -550,14 +554,17 @@ async function traverse ({
 
   // Todo: We could instead use (or return) a single set but gathering
   //   per file currently, so avoiding building a separate `Set` for now.
-  const values = [...resolvedMap.values()].filter((value) => {
-    switch (value) {
+  const values = [...resolvedMap.entries()].filter(([key]) => {
+    switch (key) {
     case 'json': case 'builtin':
-      return includeType.includes(value);
+      return includeType.includes(key);
     default:
       return true;
     }
+  }).map(([, value]) => {
+    return value;
   });
+
   const filesArr = [...new Set(
     values.flatMap((set) => {
       return [...set];
