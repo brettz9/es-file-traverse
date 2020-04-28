@@ -2,6 +2,9 @@
 [![Dependencies](https://img.shields.io/david/brettz9/es-file-traverse.svg)](https://david-dm.org/brettz9/es-file-traverse)
 [![devDependencies](https://img.shields.io/david/dev/brettz9/es-file-traverse.svg)](https://david-dm.org/brettz9/es-file-traverse?type=dev)
 
+[![eslint badge](https://raw.githubusercontent.com/brettz9/eslint-formatter-badger/master/badges/eslint-badge.svg?sanitize=true)](badges/eslint-badge.svg)
+[![eslint 3rd party badge](https://raw.githubusercontent.com/brettz9/eslint-formatter-badger/master/badges/eslint-3rdparty.svg?sanitize=true)](badges/eslint-3rdparty.svg)
+
 [![testing badge](https://raw.githubusercontent.com/brettz9/es-file-traverse/master/badges/tests-badge.svg?sanitize=true)](badges/tests-badge.svg)
 [![coverage badge](https://raw.githubusercontent.com/brettz9/es-file-traverse/master/badges/coverage-badge.svg?sanitize=true)](badges/coverage-badge.svg)
 <!--
@@ -21,32 +24,75 @@
 
 # es-file-traverse
 
-**This project is not fully tested!**
-
-<!--
 ## Installation
 
 ```shell
 npm i es-file-traverse
 ```
--->
 
 ## Comparison to other projects
 
 This project is similar to [imports-visitor](https://www.npmjs.com/package/imports-visitor),
 but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 
+## Usage with ESLint
+
+One of the motivations behind this library was to allow linting of code from
+third parties, not for stylistic purposes, but to avoid introducing serious vulnerabilities or globals and other intrusions.
+
+While one can opt to lint `node_modules`, this can be a heavy hammer, as:
+
+1. Not all of your production code uses every folder in `node_modules`.
+2. You may get other errors from files you are not actually using (including
+    possibly files that were accidentally included in the dependency you are
+    checking as mere test files). While you may wish to be a good citizen
+    and lint the whole package, `es-file-traverse` lets you confine yourself
+    to those public APIs that are of most concern and may impact your users.
+
+`es-file-traverse` can be used with ESLint to target files for linting which
+are actually used by your application (not the ESLint behavior of checking
+all files in a directory unless ignored, but following imports/require
+statements into (and possibly out of) `node_modules` to find the files
+used by your script(s)). For browser applications, it is recommended you
+point `es-file-traverse` to your HTML files to ensure the source type
+(module or script) is set properly and automatically. For Node applications,
+it is recommended you do not set `--no-check-package-json` as this
+wil allow you to detect source type properly for Node.
+
+For an example, you can see that `es-file-traverse` adds its own linting
+of third party scripts, using the config [`.eslintrc-3rdparty.js`](./.eslintrc-3rdparty.js). Note that this is a small subset of the rules we use on our
+own project, and is instead focused on checking for more serious vulnerabilities
+or intrusive practices (e.g., `no-eval` or `no-global-assign`).
+
+It is recommended that you use suitable [ESLint's command-line flags](https://eslint.org/docs/user-guide/command-line-interface). Here are the flags
+we are using with a quick summary of why:
+
+- `--no-inline-config` - 3rd parties may disable rules you wish to check
+    or they may reference rules which your config does not include,
+    causing linting errors.
+- `--no-ignore` - Don't apply our own `.eslintignore` to the explicit
+    list of third party files we are including.
+- `--no-eslintrc` - We don't want to check the normal hierarchy of `.eslintrc.*`
+    files, as these are used by our and other projects' for their stylstic
+    concerns. We instead use `--config` to indicate the rules we wish to
+    be applied.
+- `--config` - Indicates the actual rules we want applied to third party
+    files discovered to be used by, or by the dependencies of, the `--file`
+    file passed to `es-file-traverse`.
+
+We use the backticks to ensure that the list of files returned by
+`es-file-traverse` is passed on to `eslint`.
+
+```sh
+eslint --no-inline-config --no-ignore --no-eslintrc --config .eslintrc-3rdparty.js `es-file-traverse --file ./bin/cli.js --node --cjs`
+```
+
+(Note that we actually use `node ./bin/cli.js` instead of `es-file-traverse` in our script as our own binary file is not available to us, but it is when
+installed, so you can use `es-file-traverse` with your own scripts.)
+
 ## CLI
 
 ![doc-includes/cli.svg](doc-includes/cli.svg)
-
-## Immediate to-dos
-
-1. Ensure has CLI (as well as programmatic) option to be able to pass **list
-    of files to `eslint`**:
-    <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
-    1. Docs: Add badges for linting (esp. for deps.)
-        when usable (dogfooding with linting badge)
 
 ## To-dos
 
