@@ -90,6 +90,18 @@ eslint --no-inline-config --no-ignore --no-eslintrc --config .eslintrc-3rdparty.
 (Note that we actually use `node ./bin/cli.js` instead of `es-file-traverse` in our script as our own binary file is not available to us, but it is when
 installed, so you can use `es-file-traverse` with your own scripts.)
 
+## Usage with `eslint-formatter-badger`
+
+Once we are linting files from our own projects, and particularly when we are
+linting third party dependencies, we may wish to inform consumers of our
+project of the degree to which we have looked out for weaknesses, such as by
+listing the number of rules passing or the types of rules (e.g., for
+vulernabilities or intrusive code).
+
+See [eslint-formatter-badger](https://github.com/brettz9/eslint-formatter-badger)
+for more on how to do this, in particular the section
+``"Usage with `es-file-traverse`".``
+
 ## CLI
 
 ![doc-includes/cli.svg](doc-includes/cli.svg)
