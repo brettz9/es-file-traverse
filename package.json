@@ -64,6 +64,7 @@
     "eslint": "^6.8.0",
     "eslint-config-ash-nazg": "^21.0.0",
     "eslint-config-standard": "^14.1.1",
+    "eslint-formatter-badger": "^0.2.0",
     "eslint-plugin-array-func": "^3.1.5",
     "eslint-plugin-chai-expect": "^2.1.0",
     "eslint-plugin-chai-expect-keywords": "^2.0.1",

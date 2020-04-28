@@ -45,7 +45,7 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 1. Ensure has CLI (as well as programmatic) option to be able to pass **list
     of files to `eslint`**:
     <https://stackoverflow.com/questions/41405126/how-can-i-dynamically-pass-arguments-to-a-node-script-using-unix-commands>
-    1. Docs: Add badges for testing, coverage, and linting (esp. for deps.)
+    1. Docs: Add badges for linting (esp. for deps.)
         when usable (dogfooding with linting badge)
 
 ## To-dos
