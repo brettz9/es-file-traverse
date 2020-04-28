@@ -457,6 +457,8 @@ async function traverse ({
               html: true
             }));
           },
+          // This should only occur with a stream error
+          // istanbul ignore next
           onerror (err) {
             // istanbul ignore next
             reject(err);
