@@ -227,6 +227,7 @@ describe('CLI', function () {
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
         '--file', './test/fixtures/cjs.js',
+        '--node',
         '--cjs'
       ], 5000);
       expect(stderr).to.equal('');
