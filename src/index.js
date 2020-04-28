@@ -476,8 +476,6 @@ async function traverse ({
       return undefined;
     });
     await Promise.all(proms);
-    // eslint-disable-next-line no-console
-    console.log('done');
   }
 
   const seriesOrParallel = serialOrParallel(serial);
