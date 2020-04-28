@@ -19,7 +19,7 @@
     "eslint": "eslint --ext=js,md,html .",
     "eslint-badges": "npm run eslint-badge && npm run eslint-3rdparty-badge",
     "eslint-badge": "eslint-formatter-badger --outputPath badges/eslint-badge.svg .",
-    "eslint-3rdparty-badge": "eslint-formatter-badger --mainTemplate=\"ESLint 3rd party light audit (\\${ruleMapCount} rules in \\${numFiles} files)\" --filteredTypes intrusive,vulnerability --ruleMap .eslintRuleTypeMap.json --outputPath badges/eslint-3rdparty.svg --noEslintInlineConfig --noUseEslintIgnore --noUseEslintrc --eslintConfigPath .eslintrc-3rdparty.js `node ./bin/cli.js --file ./bin/cli.js --node --cjs`",
+    "eslint-3rdparty-badge": "eslint-formatter-badger --mainTemplate=\"ESLint 3rd party light audit (\\${ruleMapCount} rules against \\${numFiles} files)\" --filteredTypes intrusive,vulnerability --ruleMap .eslintRuleTypeMap.json --outputPath badges/eslint-3rdparty.svg --noEslintInlineConfig --noUseEslintIgnore --noUseEslintrc --eslintConfigPath .eslintrc-3rdparty.js `node ./bin/cli.js --file ./bin/cli.js --node --cjs`",
     "lint": "npm run eslint",
     "coverage-badge": "coveradge doc-includes/coverage-badge.svg",
     "mocha": "mocha",
