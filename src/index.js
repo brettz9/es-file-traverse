@@ -12,6 +12,7 @@ const globby = require('globby');
 const fetch = require('file-fetch');
 const htmlparser2 = require('htmlparser2');
 const packageJsonFinder = require('find-package-json');
+const builtinModules = require('builtin-modules');
 
 const nodeResolve = require('./resolve');
 
@@ -320,7 +321,26 @@ async function traverseJSFile ({
     return resolvedMap;
   }
 
+  // Node module
+  if (nodeResolution && cjs && builtinModules.includes(fullPath)) {
+    const builtinSet = resolvedMap.get('builtin') || new Set();
+    builtinSet.add(fullPath);
+    resolvedMap.set('builtin', builtinSet);
+    return resolvedMap;
+  }
   const res = await fetch(fullPath);
+  if (!res.ok) {
+    throw new Error(`File not found: ${fullPath}`);
+  }
+
+  // JSON
+  if (res.headers.get('content-type').includes('application/json')) {
+    const jsonSet = resolvedMap.get('json') || new Set();
+    jsonSet.add(fullPath);
+    resolvedMap.set('json', jsonSet);
+    return resolvedMap;
+  }
+
   const text = await res.text();
 
   await traverseJSText({
@@ -362,7 +382,8 @@ async function traverse ({
   noCheckPackageJson,
   defaultSourceType = undefined,
   output = null,
-  format = 'none'
+  format = 'none',
+  includeType = []
 }) {
   if (noEsm && !cjsModules && !amdModules) {
     throw new Error(
@@ -529,8 +550,16 @@ async function traverse ({
 
   // Todo: We could instead use (or return) a single set but gathering
   //   per file currently, so avoiding building a separate `Set` for now.
+  const values = [...resolvedMap.values()].filter((value) => {
+    switch (value) {
+    case 'json': case 'builtin':
+      return includeType.includes(value);
+    default:
+      return true;
+    }
+  });
   const filesArr = [...new Set(
-    [...resolvedMap.values()].flatMap((set) => {
+    values.flatMap((set) => {
       return [...set];
     })
   )];

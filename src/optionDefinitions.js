@@ -127,6 +127,15 @@ const optionDefinitions = [
       'into ESLint. "none" may be desired when `output` is used. ' +
       'Defaults to "strings" in CLI and "none" in programmatic usage.',
     typeLabel: '{underline "strings"|"json"|"none"}'
+  },
+  {
+    name: 'includeType', type: String,
+    multiple: true,
+    description: 'Opt in to include non-JS types in results (built-in ' +
+      'Node modules or JSON). Default is not to use (only JS files are ' +
+      'included as needed when passing to ESLint without such as a JSON ' +
+      'processor plugin).',
+    typeLabel: '{underline "json"|"builtin"}'
   }
 ];
 
