@@ -1,9 +1,14 @@
+import {readFile as readFileOrig} from 'fs';
 import {resolve as pathResolve, dirname} from 'path';
+import {promisify} from 'util';
 
 import spawnPromise from './utilities/spawnPromise.js';
 
+const readFile = promisify(readFileOrig);
+
 const dir = dirname(new URL(import.meta.url).pathname);
 const cliPath = pathResolve(dir, '../bin/cli.js');
+const outputFile = pathResolve(dir, './results/output.json');
 
 describe('CLI', function () {
   this.timeout(10000);
@@ -23,7 +28,6 @@ describe('CLI', function () {
       '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
-    expect(stdout).to.contain('filesArr');
     [
       '/test/fixtures/main.js',
       '/test/fixtures/file1.js',
@@ -34,6 +38,52 @@ describe('CLI', function () {
   });
 
   it(
+    'esFileTraverse binary (file) and explicit modules, with format "json"',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/main.js',
+        '--node',
+        '--defaultSourceType', 'module',
+        '--format', 'json'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        '/test/fixtures/main.js',
+        '/test/fixtures/file1.js',
+        '/test/fixtures/file2.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(`${expectedFile}"`);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) and explicit modules, outputting to file' +
+    'and with `format`: "none"',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/main.js',
+        '--node',
+        '--defaultSourceType', 'module',
+        '--output', outputFile,
+        '--format', 'none'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.equal('');
+      const results = JSON.parse(await readFile(outputFile, 'utf8'));
+      [
+        '/test/fixtures/main.js',
+        '/test/fixtures/file1.js',
+        '/test/fixtures/file2.js'
+      ].forEach((expectedFile) => {
+        expect(results.some((result) => {
+          return result.endsWith(expectedFile);
+        })).to.be.true;
+      });
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) and modules by file extension',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
@@ -41,7 +91,6 @@ describe('CLI', function () {
         '--node'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/import.mjs',
         '/test/fixtures/import2.mjs'
@@ -60,7 +109,6 @@ describe('CLI', function () {
         '--cjs'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/cjs.cjs',
         '/test/fixtures/cjs2.cjs'
@@ -77,7 +125,6 @@ describe('CLI', function () {
         '--file', './test/fixtures/entry.html'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/script1.js',
         '/test/fixtures/file1.js',
@@ -101,7 +148,6 @@ describe('CLI', function () {
         '--no-esm'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/cjs.cjs',
         '/test/fixtures/cjs2.cjs'
@@ -118,7 +164,6 @@ describe('CLI', function () {
       '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
-    expect(stdout).to.contain('filesArr');
     [
       '/test/fixtures/main.js',
       '/test/fixtures/file1.js',
@@ -136,7 +181,6 @@ describe('CLI', function () {
       '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
-    expect(stdout).to.contain('filesArr');
     [
       '/test/fixtures/main.js',
       '/test/fixtures/file1.js',
@@ -168,7 +212,6 @@ describe('CLI', function () {
         '--defaultSourceType', 'module'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/main.js',
         '/test/fixtures/file1.js',
@@ -187,7 +230,6 @@ describe('CLI', function () {
         '--cjs'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/cjs.js',
         '/test/fixtures/cjs2.js',
@@ -206,7 +248,6 @@ describe('CLI', function () {
         '--cjs'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/package-json-script/cjs.js',
         '/test/fixtures/package-json-script/cjs2.js'
@@ -223,7 +264,6 @@ describe('CLI', function () {
         '--file', './test/fixtures/package-json-module/import.js'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/package-json-module/import.js',
         '/test/fixtures/package-json-module/import2.js'
@@ -241,7 +281,6 @@ describe('CLI', function () {
         '--amd'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/amd-define.js',
         '/test/fixtures/amd2.js',
@@ -263,7 +302,6 @@ describe('CLI', function () {
         '--babelEslintOptions', '{"sourceType":"module"}'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr');
       [
         '/test/fixtures/main.js',
         '/test/fixtures/file1.js',
@@ -284,7 +322,8 @@ describe('CLI', function () {
         '--defaultSourceType', 'module'
       ], 5000);
       expect(stderr).to.equal('');
-      expect(stdout).to.contain('filesArr []');
+      // Logged with empty string
+      expect(stdout).to.equal('\n');
     }
   );
 
@@ -295,7 +334,6 @@ describe('CLI', function () {
       '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
-    expect(stdout).to.contain('filesArr');
     [
       '/test/fixtures/cyclic1.js',
       '/test/fixtures/cyclic2.js'
@@ -312,7 +350,6 @@ describe('CLI', function () {
       '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
-    expect(stdout).to.contain('filesArr');
     const indexes = [];
     [
       '/test/fixtures/multi-imports.js',
@@ -392,7 +429,6 @@ describe('CLI', function () {
       '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
-    expect(stdout).to.contain('filesArr');
     expect(stdout).to.contain('enter');
     expect(stdout).to.contain('exit');
     // console.log('stdout', stdout);

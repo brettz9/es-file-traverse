@@ -114,6 +114,19 @@ const optionDefinitions = [
       'passing in HTML files will cause `sourceType` to be auto-set ' +
       'depending on whether it is specified as a script or module.',
     typeLabel: '{underline options-as-JSON-object}'
+  },
+  {
+    name: 'output', type: String, alias: 'o',
+    description: 'File path to which to save output (as JSON). Defaults ' +
+      'to not being used.',
+    typeLabel: '{underline path}'
+  },
+  {
+    name: 'format', type: String,
+    description: 'Format to log to console. "strings" may be piped ' +
+      'into ESLint. "none" may be desired when `output` is used. ' +
+      'Defaults to "strings" in CLI and "none" in programmatic usage.',
+    typeLabel: '{underline "strings"|"json"|"none"}'
   }
 ];
 

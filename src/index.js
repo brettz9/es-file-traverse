@@ -1,7 +1,8 @@
 'use strict';
 
-const {createReadStream} = require('fs');
-const {dirname, join} = require('path');
+const {createReadStream, writeFile: writeFileOrig} = require('fs');
+const {dirname, join, resolve: pathResolve} = require('path');
+const {promisify} = require('util');
 
 require('array-flat-polyfill');
 const {parseForESLint} = require('babel-eslint');
@@ -13,6 +14,8 @@ const htmlparser2 = require('htmlparser2');
 const packageJsonFinder = require('find-package-json');
 
 const nodeResolve = require('./resolve');
+
+const writeFile = promisify(writeFileOrig);
 
 // Decided againts @babel/traverse, in case might use ESLint AST
 //  for ESLint rules
@@ -357,7 +360,9 @@ async function traverse ({
   cjs: cjsModules = false,
   amd: amdModules = false,
   noCheckPackageJson,
-  defaultSourceType = undefined
+  defaultSourceType = undefined,
+  output = null,
+  format = 'none'
 }) {
   if (noEsm && !cjsModules && !amdModules) {
     throw new Error(
@@ -524,11 +529,31 @@ async function traverse ({
 
   // Todo: We could instead use (or return) a single set but gathering
   //   per file currently, so avoiding building a separate `Set` for now.
-  return [...new Set(
+  const filesArr = [...new Set(
     [...resolvedMap.values()].flatMap((set) => {
       return [...set];
     })
   )];
+
+  if (output) {
+    await writeFile(
+      pathResolve(cwd, output), JSON.stringify(filesArr, null, 2)
+    );
+  }
+
+  switch (format) {
+  case 'strings':
+    // eslint-disable-next-line no-console
+    console.log(filesArr.join(' '));
+    break;
+  case 'json':
+    // eslint-disable-next-line no-console
+    console.log(JSON.stringify(filesArr, null, 2));
+    break;
+  default: // "none"
+    break;
+  }
+  return filesArr;
 }
 
 exports.traverseJSText = traverseJSText;

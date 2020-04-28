@@ -19,9 +19,10 @@ if (!optionDefinitions) { // cliBasics handled
 
 (async () => {
 try {
-  const filesArr = await mainScript(optionDefinitions);
-  // eslint-disable-next-line no-console
-  console.log('filesArr', filesArr);
+  await mainScript({
+    format: 'strings', // (Overridable) default for CLI only
+    ...optionDefinitions
+  });
 } catch (err) {
   // eslint-disable-next-line no-console
   console.error(err);
