@@ -80,14 +80,14 @@ const optionDefinitions = [
   {
     name: 'amd', type: Boolean,
     description: 'Whether to check AMD modules. Note that this will ' +
-      'ultimately depend on an `XMLHttpRequest` or `fetch` implementation' +
+      'ultimately depend on an `XMLHttpRequest` or `fetch` implementation ' +
       'in the browser. Defaults to `false`. Assumes a non-overwritten ' +
       '`require` and `define`.'
   },
   {
     name: 'forceLanguage', type: String,
     description: 'Whether to force treatment of files as a file type (e.g., ' +
-      '"js" for JavaScript even if possessing an `.htm`/`.html` extension.' +
+      '"js" for JavaScript even if possessing an `.htm`/`.html` extension. ' +
       'Defaults to not being used.',
     typeLabel: '{underline "js"|"html"}'
   },

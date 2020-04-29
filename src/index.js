@@ -35,7 +35,7 @@ const dynamicImport =
   ':matches(' +
     // `eslint-plugin-import` checks for this
     'CallExpression' +
-      '[callee.type="import"][arguments.length=1] > Literal,' +
+      '[callee.type="import"][arguments.length=1] > Literal, ' +
     'ImportExpression > Literal' +
   // From `eslint-plugin-import` for std::string?
   // ':has(Literal[value!="string"])';
