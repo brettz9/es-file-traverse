@@ -1,5 +1,9 @@
 # CHANGES for `es-file-traverse`
 
+## ?
+
+- npm: Point to now merged `mocha-badge-generator`
+
 ## 0.1.1
 
 - Linting (LGTM): LGTM-inspired linting or fixes (affects CLI help)
