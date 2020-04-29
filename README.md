@@ -24,6 +24,10 @@
 
 # es-file-traverse
 
+Allows traversing ECMAScript (JavaScript) files by their `import`/`require`
+chains, building a list of files and optionally executing a callback with
+the file name, source and AST.
+
 ## Installation
 
 ```shell
