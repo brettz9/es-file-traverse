@@ -3,6 +3,7 @@
 ## ?
 
 - npm: Point to now merged `mocha-badge-generator`
+- npm: Update devDeps.
 
 ## 0.1.1
 
