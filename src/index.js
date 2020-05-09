@@ -81,10 +81,12 @@ const selectorMap = new Map([
 const serialOrParallel = (serial) => {
   return serial
     ? (promMethods) => {
-      return promMethods.reduce(async (previousPromise, promMethod, i) => {
-        await previousPromise;
-        return promMethod();
-      }, Promise.resolve());
+      return (async () => {
+        for (const promMethod of promMethods) {
+          // eslint-disable-next-line no-await-in-loop
+          await promMethod();
+        }
+      })();
     }
     : (promMethods) => Promise.all(promMethods.map((promMethod) => {
       return promMethod();
