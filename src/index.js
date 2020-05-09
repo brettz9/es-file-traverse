@@ -80,13 +80,15 @@ const selectorMap = new Map([
 
 const serialOrParallel = (serial) => {
   return serial
-    ? (proms) => {
-      return proms.reduce(async (ret, prom) => {
-        await ret;
-        return prom;
+    ? (promMethods) => {
+      return promMethods.reduce(async (previousPromise, promMethod, i) => {
+        await previousPromise;
+        return promMethod();
       }, Promise.resolve());
     }
-    : (proms) => Promise.all(proms);
+    : (promMethods) => Promise.all(promMethods.map((promMethod) => {
+      return promMethod();
+    }));
 };
 
 /**
@@ -225,7 +227,7 @@ async function traverseJSText ({
             }
         );
 
-        proms.push(traverseJSFile({
+        promMethods.push(() => traverseJSFile({
           // Don't use resolvedPath for non-Node as will be added there
           file: nodeResolution ? resolvedPath : node.value,
           cwd: dirname(fullPath),
@@ -255,16 +257,16 @@ async function traverseJSText ({
         text,
         ast,
         type,
-        proms,
+        promMethods,
         resolvedSet
       });
     }
-    await seriesOrParallel(proms);
+    await seriesOrParallel(promMethods);
   }
 
   const resolvedSet = new Set();
   resolvedSet.add(fullPath);
-  const proms = [];
+  const promMethods = [];
   if (!noEsm) {
     await esqueryTraverse('esm');
   }
@@ -417,7 +419,7 @@ async function traverse ({
    */
   async function traverseHTMLFile (htmlFile) {
     let lastName, lastScriptIsModule;
-    const proms = [];
+    const promMethods = [];
     // eslint-disable-next-line promise/avoid-new
     await new Promise((resolve, reject) => {
       const parserStream = new htmlparser2.WritableStream(
@@ -445,7 +447,7 @@ async function traverse ({
               }
 
               const sourceType = isModule ? 'module' : 'script';
-              proms.push(traverseJSFile({
+              promMethods.push(() => traverseJSFile({
                 file: attribs.src,
                 cwd: dirname(join(cwd, htmlFile)),
                 node: false,
@@ -469,7 +471,7 @@ async function traverse ({
             }
             const sourceType = lastScriptIsModule ? 'module' : 'script';
 
-            proms.push(traverseJSText({
+            promMethods.push(() => traverseJSText({
               text,
               babelEslintOptions: {
                 ...babelEslintOptions,
@@ -505,50 +507,56 @@ async function traverse ({
       });
       return undefined;
     });
-    await Promise.all(proms);
+    await seriesOrParallel(promMethods);
   }
 
   const seriesOrParallel = serialOrParallel(serial);
   await seriesOrParallel(
-    files.map(async (file) => {
+    files.map((file) => {
       const ext = file.split('.').pop();
       if (forceLanguage === 'html' ||
         (!forceLanguage && htmlExtension.includes(ext))
       ) {
-        return await traverseHTMLFile(file);
+        return async () => await traverseHTMLFile(file);
       }
       if (forceLanguage === 'js' ||
         (!forceLanguage && jsExtension.includes(ext))
       ) {
-        let possibleSourceType;
-        if (!noCheckPackageJson) {
-          const packageJsonType = await findNearestPackageJsonType(file);
-          possibleSourceType = {
-            sourceType: packageJsonType === 'module'
-              ? 'module'
-              : packageJsonType === 'commonjs'
-                ? 'script'
-                : defaultSourceType
-          };
-        }
+        return async () => {
+          let possibleSourceType;
+          if (!noCheckPackageJson) {
+            const packageJsonType = await findNearestPackageJsonType(file);
+            possibleSourceType = {
+              sourceType: packageJsonType === 'module'
+                ? 'module'
+                : packageJsonType === 'commonjs'
+                  ? 'script'
+                  : defaultSourceType
+            };
+          }
 
-        return traverseJSFile({
-          file,
-          cwd,
-          node: nodeResolution,
-          resolvedMap,
-          babelEslintOptions: {
-            ...babelEslintOptions,
-            ...possibleSourceType
-            // Todo: Add override of sourceType if detecting package.json `type`
-          },
-          callback,
-          noEsm,
-          cjs: cjsModules,
-          amd: amdModules
-        });
+          return traverseJSFile({
+            file,
+            cwd,
+            node: nodeResolution,
+            resolvedMap,
+            babelEslintOptions: {
+              ...babelEslintOptions,
+              ...possibleSourceType
+              // Todo: Add override of sourceType if detecting
+              //   package.json `type`
+            },
+            serial,
+            callback,
+            noEsm,
+            cjs: cjsModules,
+            amd: amdModules
+          });
+        };
       }
-      return undefined;
+      return () => {
+        // No-op
+      };
     })
   );
 

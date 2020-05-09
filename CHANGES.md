@@ -1,7 +1,10 @@
 # CHANGES for `es-file-traverse`
 
-## ?
+## 0.1.2
 
+- Fix: Ensure `serial` option works properly (needed to reduce promise
+    functions, not promises)
+- npm: Update to stable `cypress-multi-reporters` since presently maintained
 - npm: Point to now merged `mocha-badge-generator`
 - npm: Update devDeps.
 

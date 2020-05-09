@@ -380,6 +380,7 @@ describe('CLI', function () {
       '--defaultSourceType', 'module'
     ], 5000);
     expect(stderr).to.equal('');
+
     const indexes = [];
     [
       '/test/fixtures/multi-imports.js',
