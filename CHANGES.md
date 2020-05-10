@@ -1,5 +1,10 @@
 # CHANGES for `es-file-traverse`
 
+## ?
+
+- Docs: Update badges per latest devDeps
+- npm: Update badge devDeps
+
 ## 0.1.2
 
 - Fix: Ensure `serial` option works properly (needed to reduce promise
