@@ -2,8 +2,9 @@
 
 ## ?
 
+- Docs: Update eslint-badge as per latest devDep. update
 - Docs: Update badges per latest devDeps
-- npm: Update badge devDeps
+- npm: Update devDeps
 
 ## 0.1.2
 
