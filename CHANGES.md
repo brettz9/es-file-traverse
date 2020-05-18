@@ -4,7 +4,9 @@
 
 - Docs: Update eslint-badge as per latest devDep. update
 - Docs: Update badges per latest devDeps
-- npm: Update devDeps
+- npm: Ensure `test` is linting and add `nyc` script for nyc only
+- npm: Add caching to eslint and eslint badge scripts
+- npm: Update devDeps.
 
 ## 0.1.2
 

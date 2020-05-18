@@ -1,6 +1,8 @@
 node_modules
 
 coverage/**
-.nyc_output
 
 test/results
+
+.nyc_output
+.eslintcache

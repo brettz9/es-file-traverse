@@ -1,5 +1,8 @@
 test
 coverage
+
+mocha-multi-reporters.json
+
 .nyc_output
 .mocharc.js
-mocha-multi-reporters.json
+.eslintcache
