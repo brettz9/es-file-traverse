@@ -205,6 +205,22 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) silently ignoring use of glob with ' +
+      '`noGlobs` when `ignoreResolutionErrors` set',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/ma*.js',
+        '--node',
+        '--noGlobs',
+        '--defaultSourceType', 'module',
+        '--ignoreResolutionErrors'
+      ], 5000);
+      expect(stderr).to.equal('');
+      expect(stdout).to.equal('\n');
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) - relying on browser algorithm',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
@@ -427,6 +443,21 @@ describe('CLI', function () {
   );
 
   it(
+    'should silently ginore import paths that would work as scripts but ' +
+      'are not valid imports when `ignoreResolutionErrors` is on.',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--cwd', dirname(new URL(import.meta.url).pathname),
+        '--file', './fixtures/bad-esm-import.js',
+        '--defaultSourceType', 'module',
+        '--ignoreResolutionErrors'
+      ]);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('bad-esm-import.js');
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) throws with bad module combinations',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
@@ -449,6 +480,21 @@ describe('CLI', function () {
       ]);
       expect(stderr).to.contain('File not found');
       expect(stdout).to.equal('');
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) silently ignores bad file URL ' +
+      'with `ignoreResolutionErrors`',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--cwd', dirname(new URL(import.meta.url).pathname),
+        '--file', './fixtures/has-bad-import.js',
+        '--defaultSourceType', 'module',
+        '--ignoreResolutionErrors'
+      ]);
+      expect(stderr).to.equal('');
+      expect(stdout).to.contain('has-bad-import.js');
     }
   );
 

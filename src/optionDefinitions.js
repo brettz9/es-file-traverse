@@ -136,6 +136,12 @@ const optionDefinitions = [
       'included as needed when passing to ESLint without such as a JSON ' +
       'processor plugin).',
     typeLabel: '{underline "json"|"builtin"}'
+  },
+  {
+    name: 'ignoreResolutionErrors', type: Boolean,
+    description: 'If a file cannot be found (e.g., because it is only to ' +
+      'be present and required in local testing), this will prevent the ' +
+      'operation from failing.'
   }
 ];
 

@@ -1,7 +1,8 @@
 # CHANGES for `es-file-traverse`
 
-## ?
+## 0.2.0
 
+- Enhancement: Add `ignoreResolutionErrors` option
 - Docs: Update eslint-badge as per latest devDep. update
 - Docs: Update badges per latest devDeps
 - npm: Ensure `test` is linting and add `nyc` script for nyc only

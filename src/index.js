@@ -133,6 +133,7 @@ async function traverseJSText ({
   cwd,
   resolvedMap = new Map(),
   serial,
+  ignoreResolutionErrors,
   noEsm,
   cjs: cjsModules,
   amd: amdModules,
@@ -217,17 +218,25 @@ async function traverseJSText ({
           }
         );
         */
-        const resolvedPath = resolver.sync(
-          node.value,
-          nodeResolution
-            ? {
-              basedir: dirname(fullPath)
-            }
-            : {
-              basedir: dirname(fullPath),
-              html
-            }
-        );
+        let resolvedPath;
+        try {
+          resolvedPath = resolver.sync(
+            node.value,
+            nodeResolution
+              ? {
+                basedir: dirname(fullPath)
+              }
+              : {
+                basedir: dirname(fullPath),
+                html
+              }
+          );
+        } catch (err) {
+          if (ignoreResolutionErrors) {
+            return;
+          }
+          throw err;
+        }
 
         promMethods.push(() => traverseJSFile({
           // Don't use resolvedPath for non-Node as will be added there
@@ -239,6 +248,7 @@ async function traverseJSText ({
           babelEslintOptions,
           callback,
           serial,
+          ignoreResolutionErrors,
           noEsm,
           cjs: cjsModules,
           amd: amdModules
@@ -294,6 +304,7 @@ async function traverseJSFile ({
   babelEslintOptions = {},
   callback,
   serial,
+  ignoreResolutionErrors,
   noEsm,
   cjs: cjsModules,
   amd: amdModules,
@@ -308,17 +319,25 @@ async function traverseJSFile ({
     paths: [cwd]
   });
   */
-  const fullPath = await resolver(
-    file,
-    nodeResolution
-      ? {
-        basedir: cwd
-      }
-      : {
-        html,
-        basedir: cwd
-      }
-  );
+  let fullPath;
+  try {
+    fullPath = await resolver(
+      file,
+      nodeResolution
+        ? {
+          basedir: cwd
+        }
+        : {
+          html,
+          basedir: cwd
+        }
+    );
+  } catch (err) {
+    if (ignoreResolutionErrors) {
+      return resolvedMap;
+    }
+    throw err;
+  }
   // console.error('fullPath', cwd, '::', html, '::', file, '::', fullPath);
 
   if (resolvedMap.has(fullPath)) {
@@ -334,6 +353,9 @@ async function traverseJSFile ({
   }
   const res = await fetch(fullPath);
   if (!res.ok) {
+    if (ignoreResolutionErrors) {
+      return resolvedMap;
+    }
     throw new Error(`File not found: ${fullPath}`);
   }
 
@@ -361,6 +383,7 @@ async function traverseJSFile ({
     html,
     resolvedMap,
     serial,
+    ignoreResolutionErrors,
     noEsm,
     cjs: cjsModules,
     amd: amdModules
@@ -384,6 +407,7 @@ async function traverse ({
   forceLanguage = null,
   jsExtension = ['js', 'cjs', 'mjs'],
   htmlExtension = ['htm', 'html'],
+  ignoreResolutionErrors,
   noEsm = false,
   cjs: cjsModules = false,
   amd: amdModules = false,
@@ -460,6 +484,7 @@ async function traverse ({
                 },
                 callback,
                 serial,
+                ignoreResolutionErrors,
                 noEsm,
                 cjs: cjsModules,
                 amd: amdModules,
@@ -484,6 +509,7 @@ async function traverse ({
               cwd: dirname(join(cwd, htmlFile)),
               resolvedMap,
               serial,
+              ignoreResolutionErrors,
               noEsm,
               cjs: cjsModules,
               amd: amdModules,
@@ -550,6 +576,7 @@ async function traverse ({
             },
             serial,
             callback,
+            ignoreResolutionErrors,
             noEsm,
             cjs: cjsModules,
             amd: amdModules
