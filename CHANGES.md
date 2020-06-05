@@ -10,6 +10,7 @@
 - Enhancement: Add `pathExpression` regular expression option to allow
     limiting results to those paths matching the expression (e.g.,
     `node_modules`)
+- npm: Update `globby` and devDeps.
 
 ## 0.2.0
 

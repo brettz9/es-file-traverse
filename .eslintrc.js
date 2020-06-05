@@ -64,6 +64,8 @@ module.exports = {
 
     'compat/compat': 0,
     'import/no-commonjs': 0,
-    'import/unambiguous': 0
+    'import/unambiguous': 0,
+
+    'eslint-comments/require-description': 0
   }
 };
