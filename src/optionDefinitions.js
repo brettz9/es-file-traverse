@@ -58,7 +58,7 @@ const optionDefinitions = [
     description: 'When checking non-HTML JavaScript files (and ' +
       '`no-check-package-json` is not set), and no `package.json` `type` ' +
       'is found, this will determine the source type. Overrides ' +
-      '`babelESLintOptions.sourceType` (as does presence of "mjs" or ' +
+      '`parserOptions.sourceType` (as does presence of "mjs" or ' +
       '"cjs" extension with `node`) for such files unless ' +
       '`no-check-package-json` is set. Defaults to ' +
       '`undefined`, but is overridden by "cjs" or "mjs" extensions ' +
@@ -104,9 +104,26 @@ const optionDefinitions = [
     typeLabel: '{underline extension string}'
   },
   {
-    name: 'babelEslintOptions', type: String,
+    name: 'pathExpression', type: String,
+    description: 'Regular expression to match paths to include. By default, ' +
+      'this whitelist will not be in effect. Set, for example to ' +
+      '`"/node_modules/"` to restrict results to dependencies. If no ' +
+      'slashes are used (for flags), will default to using the `u` flag only.',
+    typeLabel: '{underline regular expression for path matching}'
+  },
+  {
+    name: 'parser', type: String,
+    description: 'Indicates the parser to use. Unless using `babel-eslint` ' +
+      '(the default), you will need to be sure the parser is added to your ' +
+      'dependencies.',
+    typeLabel: '{underline "babel-eslint"|"espree"|"esprima"|' +
+      '"@typescript-eslint/parser"}'
+  },
+  {
+    name: 'parserOptions', type: String,
     description: 'Options (including `babelOptions` if desired) to pass to ' +
-      '`babel-eslint`. Defaults to an object with only an auto-determined ' +
+      'the parser (`babel-eslint` is the one built-in by default). Defaults ' +
+      'to an object with only an auto-determined ' +
       '`filePath` being passed in and `sourceType` set to "module" by ' +
       'default if the file extension ends in "mjs" or to "script" if it ' +
       'ends in "cjs" (you can manually set this as desired to force the ' +

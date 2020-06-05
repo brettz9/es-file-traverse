@@ -1,6 +1,6 @@
 {
   "name": "es-file-traverse",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Facilities for traversing JavaScript files",
   "author": "Brett Zamir",
   "contributors": [],

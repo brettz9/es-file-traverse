@@ -116,10 +116,7 @@ for more on how to do this, in particular the section
 1. Options
     1. Option to give an error or report listing **files which were not
         traversed** but within a set of specified files.
-    1. Add a **blacklist** so that not end up linting, e.g., `node_modules`
-        (e.g., when linting non-security issues) or to avoid re-linting
-        one's own code (and only lint dependencies found within
-        `node_modules`).
+    1. Add a **blacklist** as with `pathExpression` whitelist.
 1. Iteration methods
     1. For modules, check also for `require` when Node's `module.createRequire`
         or `module.createRequireFromPath` are used.

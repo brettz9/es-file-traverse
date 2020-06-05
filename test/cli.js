@@ -264,6 +264,57 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) - cjs with `pathExpression` filter',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs-3rdparty.cjs',
+        '--node',
+        '--cjs',
+        '--pathExpression', 'node_modules'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        'node_modules'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+      [
+        /\spath\s/u,
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
+        /\/test\/fixtures\/cjs2\.js/u
+      ].forEach((unexpectedItem) => {
+        expect(stdout).to.not.match(unexpectedItem);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - cjs with `pathExpression` filter ' +
+      'using flags',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs-3rdparty.cjs',
+        '--node',
+        '--cjs',
+        '--pathExpression', '/node_modules/i'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        'node_modules'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+      [
+        /\spath\s/u,
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
+        /\/test\/fixtures\/cjs2\.js/u
+      ].forEach((unexpectedItem) => {
+        expect(stdout).to.not.match(unexpectedItem);
+      });
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) - cjs, including builtins and JSON',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
@@ -340,12 +391,33 @@ describe('CLI', function () {
   );
 
   it(
-    'esFileTraverse binary (file) - relying on `babelEslintOptions.sourceType`',
+    'esFileTraverse binary (file) - relying on `parserOptions.sourceType`',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
         '--file', './test/fixtures/main.js',
         '--no-check-package-json',
-        '--babelEslintOptions', '{"sourceType":"module"}'
+        '--parserOptions', '{"sourceType":"module"}'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        '/test/fixtures/main.js',
+        '/test/fixtures/file1.js',
+        '/test/fixtures/file2.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - relying on `parserOptions.sourceType` ' +
+    'and using non-default parser',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/main.js',
+        '--no-check-package-json',
+        '--parser', 'espree',
+        '--parserOptions', '{"sourceType":"module"}'
       ], 5000);
       expect(stderr).to.equal('');
       [

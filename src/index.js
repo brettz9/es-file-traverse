@@ -5,7 +5,6 @@ const {dirname, join, resolve: pathResolve} = require('path');
 const {promisify} = require('util');
 
 require('array-flat-polyfill');
-const {parseForESLint} = require('babel-eslint');
 const esquery = require('esquery');
 const globby = require('globby');
 // eslint-disable-next-line no-shadow
@@ -127,7 +126,8 @@ browserResolver.sync = (...args) => {
  */
 async function traverseJSText ({
   text,
-  babelEslintOptions = {},
+  parserOptions = {},
+  parser = 'babel-eslint',
   fullPath,
   callback,
   cwd,
@@ -142,26 +142,39 @@ async function traverseJSText ({
 }) {
   const resolver = nodeResolution ? nodeResolve : browserResolver;
 
-  const sourceType = babelEslintOptions.sourceType === 'module' ||
+  const sourceType = parserOptions.sourceType === 'module' ||
       (nodeResolution && !noEsm && fullPath.endsWith('.mjs'))
     ? 'module'
-    : babelEslintOptions.sourceType === 'script' ||
+    : parserOptions.sourceType === 'script' ||
       (nodeResolution && cjsModules && fullPath.endsWith('.cjs'))
       ? 'script'
       : undefined;
 
   if (sourceType) {
-    babelEslintOptions = {
-      ...babelEslintOptions,
+    parserOptions = {
+      ...parserOptions,
       sourceType
     };
   }
 
-  const {ast} = parseForESLint(text, {
+  // eslint-disable-next-line node/global-require, import/no-dynamic-require
+  const parserObj = require(parser);
+
+  const parseForESLintMethod = {}.hasOwnProperty.call(
+    parserObj, 'parseForESLint'
+  );
+
+  const result = parserObj[
+    parseForESLintMethod
+      // babel-eslint, @typescript-eslint/parser
+      ? 'parseForESLint'
+      // esprima, espree
+      : 'parse'
+  ](text, {
     filePath: fullPath,
     sourceType,
 
-    ...babelEslintOptions
+    ...parserOptions
     // babelOptions: {
     //   cwd, root, rootMode, envName, configFile, babelrc, babelrcRoots,
     //   extends, env, overrides, test, include, exclude, ignore, only
@@ -185,6 +198,7 @@ async function traverseJSText ({
     // impliedStrict: false,
     // fallback
   });
+  const ast = parseForESLintMethod ? result.ast : result;
   // console.log('ast', ast);
 
   if (callback) {
@@ -245,7 +259,8 @@ async function traverseJSText ({
           node: nodeResolution,
           resolvedSet,
           resolvedMap,
-          babelEslintOptions,
+          parser,
+          parserOptions,
           callback,
           serial,
           ignoreResolutionErrors,
@@ -301,7 +316,8 @@ async function traverseJSFile ({
   cwd,
   node: nodeResolution,
   html = false,
-  babelEslintOptions = {},
+  parser,
+  parserOptions = {},
   callback,
   serial,
   ignoreResolutionErrors,
@@ -338,7 +354,6 @@ async function traverseJSFile ({
     }
     throw err;
   }
-  // console.error('fullPath', cwd, '::', html, '::', file, '::', fullPath);
 
   if (resolvedMap.has(fullPath)) {
     return resolvedMap;
@@ -375,7 +390,8 @@ async function traverseJSFile ({
 
   await traverseJSText({
     text,
-    babelEslintOptions,
+    parser,
+    parserOptions,
     fullPath,
     callback,
     cwd,
@@ -402,10 +418,12 @@ async function traverse ({
   serial = false,
   callback = null,
   cwd = process.cwd(),
-  babelEslintOptions = {},
+  pathExpression,
+  parser,
+  parserOptions = {},
   node: nodeResolution = false,
   forceLanguage = null,
-  jsExtension = ['js', 'cjs', 'mjs'],
+  jsExtension = ['js', 'cjs', 'mjs', 'ts'],
   htmlExtension = ['htm', 'html'],
   ignoreResolutionErrors,
   noEsm = false,
@@ -423,8 +441,8 @@ async function traverse ({
     );
   }
 
-  if (typeof babelEslintOptions === 'string') {
-    babelEslintOptions = JSON.parse(babelEslintOptions);
+  if (typeof parserOptions === 'string') {
+    parserOptions = JSON.parse(parserOptions);
   }
 
   const resolvedMap = new Map();
@@ -478,8 +496,9 @@ async function traverse ({
                 cwd: dirname(join(cwd, htmlFile)),
                 node: false,
                 html: true,
-                babelEslintOptions: {
-                  ...babelEslintOptions,
+                parser,
+                parserOptions: {
+                  ...parserOptions,
                   sourceType
                 },
                 callback,
@@ -500,8 +519,9 @@ async function traverse ({
 
             promMethods.push(() => traverseJSText({
               text,
-              babelEslintOptions: {
-                ...babelEslintOptions,
+              parser,
+              parserOptions: {
+                ...parserOptions,
                 sourceType
               },
               fullPath: join(cwd, htmlFile),
@@ -568,8 +588,9 @@ async function traverse ({
             cwd,
             node: nodeResolution,
             resolvedMap,
-            babelEslintOptions: {
-              ...babelEslintOptions,
+            parser,
+            parserOptions: {
+              ...parserOptions,
               ...possibleSourceType
               // Todo: Add override of sourceType if detecting
               //   package.json `type`
@@ -589,6 +610,15 @@ async function traverse ({
     })
   );
 
+  let regex;
+  if (pathExpression) {
+    // eslint-disable-next-line prefer-named-capture-group
+    const withFlags = pathExpression.match(/^\/(.*)\/(\w*)$/u);
+    regex = withFlags
+      ? new RegExp(withFlags[1], withFlags[2])
+      : new RegExp(pathExpression, 'u');
+  }
+
   // Todo: We could instead use (or return) a single set but gathering
   //   per file currently, so avoiding building a separate `Set` for now.
   const values = [...resolvedMap.entries()].filter(([key]) => {
@@ -596,6 +626,9 @@ async function traverse ({
     case 'json': case 'builtin':
       return includeType.includes(key);
     default:
+      if (regex) {
+        return regex.test(key);
+      }
       return true;
     }
   }).map(([, value]) => {

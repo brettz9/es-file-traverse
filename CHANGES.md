@@ -1,5 +1,16 @@
 # CHANGES for `es-file-traverse`
 
+## 0.3.0
+
+- Breaking change: `babelEslintOptions` -> `parserOptions`
+- Enhancement: Add `parser` option to allow parsing with parsers other
+    than the default `babel-eslint`.
+- Enhancement: Add `"ts"` to file extensions for JavaScript (so will
+    work by default when using a TypeScript parser)
+- Enhancement: Add `pathExpression` regular expression option to allow
+    limiting results to those paths matching the expression (e.g.,
+    `node_modules`)
+
 ## 0.2.0
 
 - Enhancement: Add `ignoreResolutionErrors` option
