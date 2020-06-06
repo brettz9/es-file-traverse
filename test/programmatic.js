@@ -7,7 +7,8 @@ import {
   traverse as esFileTraverse,
   traverseJSFile, traverseJSText
 } from '../src/index.js';
-import resolve from '../src/resolve.js';
+import nodeResolve from '../src/resolvers/nodeResolve.js';
+import typescriptResolve from '../src/resolvers/typescriptResolve.js';
 
 chai.use(chaiAsPromised);
 
@@ -75,10 +76,18 @@ describe('traverseJSText', function () {
   });
 });
 
-describe('resolve', function () {
+describe('`nodeResolve`', function () {
   // Shouldn't occur when used by `esFileTraverse` as user `file` must first
   //  be matched against real files by globby
-  it('resolve', function () {
-    return expect(resolve('../nonexistent')).to.be.rejectedWith(Error);
+  it('`nodeResolve`', function () {
+    return expect(nodeResolve('../nonexistent')).to.be.rejectedWith(Error);
+  });
+});
+
+describe('`typescriptResolve`', function () {
+  it('`typescriptResolve`', function () {
+    return expect(
+      typescriptResolve('../nonexistent')
+    ).to.be.rejectedWith(Error);
   });
 });

@@ -355,6 +355,26 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) - TypeScript',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/ts1.ts',
+        '--typescript',
+        '--parser', '@typescript-eslint/parser'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        '/test/fixtures/ts1.ts',
+        '/test/fixtures/ts2.ts',
+        '/test/fixtures/ts/index.ts',
+        '/test/fixtures/ts/ts3.ts'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) - relying on package-json for module type',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [

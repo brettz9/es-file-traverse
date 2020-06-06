@@ -13,7 +13,8 @@ const htmlparser2 = require('htmlparser2');
 const packageJsonFinder = require('find-package-json');
 const builtinModules = require('builtin-modules');
 
-const nodeResolve = require('./resolve');
+const typescriptResolve = require('./resolvers/typescriptResolve.js');
+const nodeResolve = require('./resolvers/nodeResolve.js');
 
 const writeFile = promisify(writeFileOrig);
 
@@ -138,9 +139,14 @@ async function traverseJSText ({
   cjs: cjsModules,
   amd: amdModules,
   node: nodeResolution,
+  typescript: typescriptResolution,
   html = false
 }) {
-  const resolver = nodeResolution ? nodeResolve : browserResolver;
+  const resolver = typescriptResolution
+    ? typescriptResolve
+    : nodeResolution
+      ? nodeResolve
+      : browserResolver;
 
   const sourceType = parserOptions.sourceType === 'module' ||
       (nodeResolution && !noEsm && fullPath.endsWith('.mjs'))
@@ -236,7 +242,7 @@ async function traverseJSText ({
         try {
           resolvedPath = resolver.sync(
             node.value,
-            nodeResolution
+            nodeResolution || typescriptResolution
               ? {
                 basedir: dirname(fullPath)
               }
@@ -257,6 +263,7 @@ async function traverseJSText ({
           file: nodeResolution ? resolvedPath : node.value,
           cwd: dirname(fullPath),
           node: nodeResolution,
+          typescript: typescriptResolution,
           resolvedSet,
           resolvedMap,
           parser,
@@ -315,6 +322,7 @@ async function traverseJSFile ({
   file,
   cwd,
   node: nodeResolution,
+  typescript: typescriptResolution,
   html = false,
   parser,
   parserOptions = {},
@@ -327,7 +335,11 @@ async function traverseJSFile ({
   resolvedSet,
   resolvedMap = new Map()
 }) {
-  const resolver = nodeResolution ? nodeResolve : browserResolver;
+  const resolver = typescriptResolution
+    ? typescriptResolve
+    : nodeResolution
+      ? nodeResolve
+      : browserResolver;
 
   /*
   // Was giving problems (due to `esm` testing?)
@@ -339,7 +351,7 @@ async function traverseJSFile ({
   try {
     fullPath = await resolver(
       file,
-      nodeResolution
+      nodeResolution || typescriptResolution
         ? {
           basedir: cwd
         }
@@ -396,6 +408,7 @@ async function traverseJSFile ({
     callback,
     cwd,
     node: nodeResolution,
+    typescript: typescriptResolution,
     html,
     resolvedMap,
     serial,
@@ -422,6 +435,7 @@ async function traverse ({
   parser,
   parserOptions = {},
   node: nodeResolution = false,
+  typescript: typescriptResolution = false,
   forceLanguage = null,
   jsExtension = ['js', 'cjs', 'mjs', 'ts'],
   htmlExtension = ['htm', 'html'],
@@ -579,7 +593,9 @@ async function traverse ({
                 ? 'module'
                 : packageJsonType === 'commonjs'
                   ? 'script'
-                  : defaultSourceType
+                  : typescriptResolution
+                    ? 'module'
+                    : defaultSourceType
             };
           }
 
@@ -587,6 +603,7 @@ async function traverse ({
             file,
             cwd,
             node: nodeResolution,
+            typescript: typescriptResolution,
             resolvedMap,
             parser,
             parserOptions: {

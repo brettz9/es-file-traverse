@@ -48,6 +48,12 @@ const optionDefinitions = [
       'Defaults to `false`.'
   },
   {
+    name: 'typescript', type: Boolean,
+    description: 'If assuming a TypeScript environment (or one otherwise ' +
+      'using the TypeScript resolution algorithm). Will not be used on html ' +
+      'files. Defaults to `false`.'
+  },
+  {
     name: 'no-check-package-json', type: Boolean,
     description: 'If set will not perform the normal checks for non-HTML ' +
       'JavaScript files of the `type` in the nearest `package.json` to ' +

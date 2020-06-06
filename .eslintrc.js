@@ -4,6 +4,7 @@ module.exports = {
   parser: 'babel-eslint',
   extends: [
     'ash-nazg/sauron-node',
+    'plugin:import/typescript',
     'plugin:node/recommended-script'
   ],
   env: {

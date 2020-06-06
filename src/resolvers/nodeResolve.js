@@ -1,14 +1,14 @@
 'use strict';
 
 /*
-import resolve from './resolve.js';
-await resolve('tap', { basedir: __dirname });
+import nodeResolve from './nodeResolve.js';
+await nodeResolve('tap', { basedir: __dirname });
 */
 
 const _resolve = require('resolve');
 
-const resolve = (path, opts = {}) => {
-  // eslint-disable-next-line promise/avoid-new, no-shadow
+const nodeResolve = (path, opts = {}) => {
+  // eslint-disable-next-line promise/avoid-new
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line promise/prefer-await-to-callbacks
     _resolve(path, opts, (err, res, pkg) => {
@@ -21,6 +21,6 @@ const resolve = (path, opts = {}) => {
   });
 };
 
-resolve.sync = _resolve.sync.bind(_resolve);
+nodeResolve.sync = _resolve.sync.bind(_resolve);
 
-module.exports = resolve;
+module.exports = nodeResolve;
