@@ -1,7 +1,7 @@
 /* eslint-env node */
 /* globals module */
 
-require('./cjs3.js');
+require('./cjs3');
 
 // Check builtins, ignored by default
 require('path');
