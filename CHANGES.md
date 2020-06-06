@@ -1,5 +1,11 @@
 # CHANGES for `es-file-traverse`
 
+## 0.5.0
+
+- Enhancement: Add `excludePathExpression` blacklist option
+- Enhancement: Add `excludePathEntryExpression` blacklist option
+- Testing: Small fixes on CJS expectations
+
 ## 0.4.1
 
 - Fix: Avoid chance for recursion on JS text

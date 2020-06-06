@@ -281,7 +281,7 @@ describe('CLI', function () {
       [
         /\spath\s/u,
         /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
-        /\/test\/fixtures\/cjs2\.js/u
+        /\/test\/fixtures\/cjs2\.cjs/u
       ].forEach((unexpectedItem) => {
         expect(stdout).to.not.match(unexpectedItem);
       });
@@ -307,9 +307,58 @@ describe('CLI', function () {
       [
         /\spath\s/u,
         /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
-        /\/test\/fixtures\/cjs2\.js/u
+        /\/test\/fixtures\/cjs2\.cjs/u
       ].forEach((unexpectedItem) => {
         expect(stdout).to.not.match(unexpectedItem);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - cjs with `excludePathExpression` filter',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs-3rdparty.cjs',
+        '--node',
+        '--cjs',
+        '--excludePathExpression', 'node_modules'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        'node_modules'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.not.include(expectedFile);
+      });
+      [
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
+        /\/test\/fixtures\/cjs2\.cjs/u
+      ].forEach((unexpectedItem) => {
+        expect(stdout).to.match(unexpectedItem);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - cjs with `excludePathEntryExpression`' +
+      ' filter',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/cjs-3rdparty.cjs',
+        '--node',
+        '--cjs',
+        '--excludePathEntryExpression', 'node_modules|cjs2\\.cjs'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        /node_modules/u,
+        /\/test\/fixtures\/cjs2\.cjs/u
+      ].forEach((expectedFile) => {
+        expect(stdout).to.not.match(expectedFile);
+      });
+      [
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/u
+      ].forEach((unexpectedItem) => {
+        expect(stdout).to.match(unexpectedItem);
       });
     }
   );

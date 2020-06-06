@@ -110,10 +110,27 @@ const optionDefinitions = [
     typeLabel: '{underline extension string}'
   },
   {
+    name: 'excludePathEntryExpression', type: String,
+    description: 'Regular expression to match paths to exclude from ' +
+      'including or visiting. By default, ' +
+      'this blacklist will not be in effect. Set, for example to ' +
+      '`"\\.css"` to avoid entering your source files. If no ' +
+      'slashes are used (for flags), will default to using the `u` flag only.',
+    typeLabel: '{underline regular expression for path matching}'
+  },
+  {
     name: 'pathExpression', type: String,
     description: 'Regular expression to match paths to include. By default, ' +
       'this whitelist will not be in effect. Set, for example to ' +
       '`"/node_modules/"` to restrict results to dependencies. If no ' +
+      'slashes are used (for flags), will default to using the `u` flag only.',
+    typeLabel: '{underline regular expression for path matching}'
+  },
+  {
+    name: 'excludePathExpression', type: String,
+    description: 'Regular expression to match paths to exclude. By default, ' +
+      'this blacklist will not be in effect. Set, for example to ' +
+      '`"/src/"` to avoid including your source files. If no ' +
       'slashes are used (for flags), will default to using the `u` flag only.',
     typeLabel: '{underline regular expression for path matching}'
   },

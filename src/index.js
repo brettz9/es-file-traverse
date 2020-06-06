@@ -83,6 +83,34 @@ const selectorMap = new Map([
 
 const textSet = new Set();
 
+/**
+ * @param {string} str
+ * @returns {RegExp}
+ */
+function getRegexFromString (str) {
+  // eslint-disable-next-line prefer-named-capture-group
+  const withFlags = str.match(/^\/(.*)\/(\w*)$/u);
+  return withFlags
+    ? new RegExp(withFlags[1], withFlags[2])
+    : new RegExp(str, 'u');
+}
+
+/**
+* @callback PromiseReturner
+* @returns {Promise<void>}
+*/
+
+/**
+* @callback PromiseMethodHandler
+* @param {PromiseReturner[]} promMethods
+* @returns {Promise<void>}
+*/
+
+/**
+ *
+ * @param {boolean} serial
+ * @returns {PromiseMethodHandler}
+ */
 const serialOrParallel = (serial) => {
   return serial
     ? (promMethods) => {
@@ -139,6 +167,7 @@ async function traverseJSText ({
   cwd,
   resolvedMap = new Map(),
   serial,
+  excludePathEntryExpression,
   ignoreResolutionErrors,
   noEsm,
   cjs: cjsModules,
@@ -282,6 +311,7 @@ async function traverseJSText ({
           parserOptions,
           callback,
           serial,
+          excludePathEntryExpression,
           ignoreResolutionErrors,
           noEsm,
           cjs: cjsModules,
@@ -340,6 +370,7 @@ async function traverseJSFile ({
   parserOptions = {},
   callback,
   serial,
+  excludePathEntryExpression,
   ignoreResolutionErrors,
   noEsm,
   cjs: cjsModules,
@@ -383,6 +414,13 @@ async function traverseJSFile ({
     return resolvedMap;
   }
 
+  if (excludePathEntryExpression) {
+    const blacklistEntryRegex = getRegexFromString(excludePathEntryExpression);
+    if (blacklistEntryRegex.test(fullPath)) {
+      return resolvedMap;
+    }
+  }
+
   // Node module
   if (nodeResolution && cjs && builtinModules.includes(fullPath)) {
     const builtinSet = resolvedMap.get('builtin') || new Set();
@@ -424,6 +462,7 @@ async function traverseJSFile ({
     html,
     resolvedMap,
     serial,
+    excludePathEntryExpression,
     ignoreResolutionErrors,
     noEsm,
     cjs: cjsModules,
@@ -443,7 +482,9 @@ async function traverse ({
   serial = false,
   callback = null,
   cwd = process.cwd(),
+  excludePathEntryExpression,
   pathExpression,
+  excludePathExpression,
   parser,
   parserOptions = {},
   node: nodeResolution = false,
@@ -529,6 +570,7 @@ async function traverse ({
                 },
                 callback,
                 serial,
+                excludePathEntryExpression,
                 ignoreResolutionErrors,
                 noEsm,
                 cjs: cjsModules,
@@ -558,6 +600,7 @@ async function traverse ({
               cwd: dirname(join(cwd, htmlFile)),
               resolvedMap,
               serial,
+              excludePathEntryExpression,
               ignoreResolutionErrors,
               noEsm,
               cjs: cjsModules,
@@ -629,6 +672,7 @@ async function traverse ({
             },
             serial,
             callback,
+            excludePathEntryExpression,
             ignoreResolutionErrors,
             noEsm,
             cjs: cjsModules,
@@ -642,13 +686,12 @@ async function traverse ({
     })
   );
 
-  let regex;
+  let whitelistRegex, blacklistRegex;
   if (pathExpression) {
-    // eslint-disable-next-line prefer-named-capture-group
-    const withFlags = pathExpression.match(/^\/(.*)\/(\w*)$/u);
-    regex = withFlags
-      ? new RegExp(withFlags[1], withFlags[2])
-      : new RegExp(pathExpression, 'u');
+    whitelistRegex = getRegexFromString(pathExpression);
+  }
+  if (excludePathExpression) {
+    blacklistRegex = getRegexFromString(excludePathExpression);
   }
 
   // Todo: We could instead use (or return) a single set but gathering
@@ -657,11 +700,9 @@ async function traverse ({
     switch (key) {
     case 'json': case 'builtin':
       return includeType.includes(key);
-    default:
-      if (regex) {
-        return regex.test(key);
-      }
+    default: {
       return true;
+    }
     }
   }).map(([, value]) => {
     return value;
@@ -671,7 +712,11 @@ async function traverse ({
     values.flatMap((set) => {
       return [...set];
     })
-  )];
+  )].filter((file) => {
+    const include = whitelistRegex ? file.match(whitelistRegex) : true;
+    const exclude = blacklistRegex ? file.match(blacklistRegex) : false;
+    return include && !exclude;
+  });
 
   if (output) {
     await writeFile(
