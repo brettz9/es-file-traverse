@@ -445,7 +445,7 @@ async function traverseJSFile ({
   }
 
   if (resolvedSet) {
-    resolvedSet.add(file);
+    resolvedSet.add(fullPath);
   }
 
   const text = await res.text();

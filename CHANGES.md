@@ -1,5 +1,9 @@
 # CHANGES for `es-file-traverse`
 
+## 0.5.1
+
+- Fix: Ensure always adding full path to results
+
 ## 0.5.0
 
 - Enhancement: Add `excludePathExpression` blacklist option
