@@ -4,6 +4,7 @@
 
 - Enhancement: Add `typescript` option for resolving by TypeScript
     [module resolution algorithm](https://www.typescriptlang.org/docs/handbook/module-resolution.html); currently auto-sets `defaultSourceType` to `module`.
+- npm: Update devDep (eslint)
 
 ## 0.3.0
 
