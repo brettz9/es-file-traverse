@@ -58,7 +58,7 @@ describe('CLI', function () {
   );
 
   it(
-    'esFileTraverse binary (file) and explicit modules, outputting to file' +
+    'esFileTraverse binary (file) and explicit modules, outputting to file ' +
     'and with `format`: "none"',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [

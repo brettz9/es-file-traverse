@@ -4,6 +4,9 @@ const {createReadStream, writeFile: writeFileOrig} = require('fs');
 const {dirname, join, resolve: pathResolve} = require('path');
 const {promisify} = require('util');
 
+// eslint-disable-next-line no-shadow
+const crypto = require('crypto');
+
 require('array-flat-polyfill');
 const esquery = require('esquery');
 const globby = require('globby');
@@ -77,6 +80,8 @@ const selectorMap = new Map([
   ['cjs', esquery.parse(cjs)],
   ['amd', esquery.parse(amd)]
 ]);
+
+const textSet = new Set();
 
 const serialOrParallel = (serial) => {
   return serial
@@ -169,6 +174,13 @@ async function traverseJSText ({
   const parseForESLintMethod = {}.hasOwnProperty.call(
     parserObj, 'parseForESLint'
   );
+
+  // Avoid bulking up memory use with full text
+  const hash = crypto.createHash('md5').update(fullPath + text).digest('hex');
+  if (textSet.has(hash)) {
+    return resolvedMap;
+  }
+  textSet.add(hash);
 
   const result = parserObj[
     parseForESLintMethod
@@ -530,6 +542,9 @@ async function traverse ({
               return;
             }
             const sourceType = lastScriptIsModule ? 'module' : 'script';
+            if (!text.trim()) {
+              return;
+            }
 
             promMethods.push(() => traverseJSText({
               text,

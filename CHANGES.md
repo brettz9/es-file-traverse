@@ -1,5 +1,10 @@
 # CHANGES for `es-file-traverse`
 
+## 0.4.1
+
+- Fix: Avoid chance for recursion on JS text
+- Refactoring: Avoid special parsing for empty script tags
+
 ## 0.4.0
 
 - Enhancement: Add `typescript` option for resolving by TypeScript
