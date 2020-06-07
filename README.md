@@ -94,6 +94,30 @@ eslint --no-inline-config --no-ignore --no-eslintrc --config .eslintrc-3rdparty.
 (Note that we actually use `node ./bin/cli.js` instead of `es-file-traverse` in our script as our own binary file is not available to us, but it is when
 installed, so you can use `es-file-traverse` with your own scripts.)
 
+## Usage with `eslint-formatter-sourcemaps`
+
+In normal linting you typically wish to enforce stylistic checks on your
+project, so you will mostly want to target source files in such linting.
+
+However, when linting third party code (e.g., to check for security
+vulnerabilities or intrusive practices)--a compelling use case of
+`es-file-traverse`--distribution files are generally preferable as targets,
+as they are the final authority on the code of your project that will be
+executable (including any embedding or importing/requiring of 3rd party
+code, e.g., within `node_modules`). (Also note that if using `--typescript`
+mode, `es-file-traverse` will, as per the TypeScript module resolution
+algorithm, follow `.d.ts` declaration files rather than the resulting
+`.js` files, so if your source is TypeScript, this is another reason you
+may not want to trouble parsing source.)
+
+But the default ESLint formatter won't follow sourcemaps to tell you
+where the original source file for the problematic code is, so you may, as
+needed, report a problem to the third party or avoid its dependency.
+You may therefore also wish to use
+[eslint-formatter-sourcemaps](https://github.com/brettz9/eslint-formatter-sourcemaps)
+with your `es-file-traverse`-driven `eslint` linting process in order to
+get the original paths shown for any linting violations.
+
 ## Usage with `eslint-formatter-badger`
 
 Once we are linting files from our own projects, and particularly when we are
