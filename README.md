@@ -42,7 +42,8 @@ but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
 ## Usage with ESLint
 
 One of the motivations behind this library was to allow linting of code from
-third parties, not for stylistic purposes, but to avoid introducing serious vulnerabilities or globals and other intrusions.
+third parties, not for stylistic purposes, but to avoid introducing serious
+vulnerabilities or globals and other intrusions.
 
 While one can opt to lint `node_modules`, this can be a heavy hammer, as:
 
@@ -65,21 +66,21 @@ wil allow you to detect source type properly for Node.
 
 For an example, you can see that `es-file-traverse` adds its own linting
 of third party scripts, using the config [`.eslintrc-3rdparty.js`](./.eslintrc-3rdparty.js). Note that this is a small subset of the rules we use on our
-own project, and is instead focused on checking for more serious vulnerabilities
-or intrusive practices (e.g., `no-eval` or `no-global-assign`).
+own project, and is instead focused on checking for more serious
+vulnerabilities or intrusive practices (e.g., `no-eval` or `no-global-assign`).
 
-It is recommended that you use suitable [ESLint's command-line flags](https://eslint.org/docs/user-guide/command-line-interface). Here are the flags
-we are using with a quick summary of why:
+It is recommended that you use suitable
+[ESLint's command-line flags](https://eslint.org/docs/user-guide/command-line-interface). Here are the flags we are using with a quick summary of why:
 
 - `--no-inline-config` - 3rd parties may disable rules you wish to check
     or they may reference rules which your config does not include,
     causing linting errors.
 - `--no-ignore` - Don't apply our own `.eslintignore` to the explicit
     list of third party files we are including.
-- `--no-eslintrc` - We don't want to check the normal hierarchy of `.eslintrc.*`
-    files, as these are used by our and other projects' for their stylstic
-    concerns. We instead use `--config` to indicate the rules we wish to
-    be applied.
+- `--no-eslintrc` - We don't want to check the normal hierarchy of
+    `.eslintrc.*` files, as these are used by our and other projects' for
+    their stylstic concerns. We instead use `--config` to indicate the rules
+    we wish to be applied.
 - `--config` - Indicates the actual rules we want applied to third party
     files discovered to be used by, or by the dependencies of, the `--file`
     file passed to `es-file-traverse`.
@@ -91,7 +92,8 @@ We use the backticks to ensure that the list of files returned by
 eslint --no-inline-config --no-ignore --no-eslintrc --config .eslintrc-3rdparty.js `es-file-traverse --file ./bin/cli.js --node --cjs`
 ```
 
-(Note that we actually use `node ./bin/cli.js` instead of `es-file-traverse` in our script as our own binary file is not available to us, but it is when
+(Note that we actually use `node ./bin/cli.js` instead of `es-file-traverse`
+in our script as our own binary file is not available to us, but it is when
 installed, so you can use `es-file-traverse` with your own scripts.)
 
 ## Usage with `eslint-formatter-sourcemaps`
@@ -155,8 +157,8 @@ for more on how to do this, in particular the section
         `child_process.spawn('node_mod_a')` ->
         `node_modules/.bin/node_mod_a` ->
         `node_modules/node_mod_a/cli/index.js`); could have linting to ensure
-        though that instead of spawning raw `node_mod` which could conflict with
-        a native `node_mod_a`, should use fixed paths for child processes.
+        though that instead of spawning raw `node_mod` which could conflict
+        with a native `node_mod_a`, should use fixed paths for child processes.
         Could, however, whitelist certain trusted native executables, albeit
         with a potential risk of namespace conflicts.
     1. Esp. if ESLint started supporting linting of URLs, we could
