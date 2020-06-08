@@ -134,6 +134,12 @@ for more on how to do this, in particular the section
 
 ## CLI
 
+Note that while `es-file-traverse` does not currently provide traces of the
+routes, you might find `--serial` (for consistent ordering) and
+`--format json` (for easy reading) helpful as when `--serial` is applied, you
+can at least see the order in which the files were processed, e.g., first
+going through one file's imports, then another's, etc.
+
 ![doc-includes/cli.svg](doc-includes/cli.svg)
 
 ## To-dos
