@@ -139,11 +139,11 @@ const browserResolver = (file, {basedir, html}) => {
   if (!html && (/^[^/.]/u).test(file)) {
     throw new Error('Browser module imports must begin with `/` or `.`');
   }
-  return new URL(
+  return join(basedir, new URL(
     file,
     // Just simulating a URL for path resolution only
-    `http://localhost${basedir}/`
-  ).pathname;
+    `http://localhost/`
+  ).pathname);
 };
 // For polymorphism with `resolve`
 browserResolver.sync = (...args) => {

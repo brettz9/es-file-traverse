@@ -1,5 +1,10 @@
 # CHANGES for `es-file-traverse`
 
+## 0.5.2
+
+- Fix: Proper absolute URL resolution
+- Docs: Usage with `eslint-formatter-sourcemaps`
+
 ## 0.5.1
 
 - Fix: Ensure always adding full path to results
