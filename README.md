@@ -144,6 +144,8 @@ going through one file's imports, then another's, etc.
 
 ## To-dos
 
+1. Get TypeScript traversal to intelligently follow JS and not only
+    declaration files.
 1. Build globals list for users also!
 1. Options
     1. Option to give an error or report listing **files which were not
