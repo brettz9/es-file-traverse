@@ -151,6 +151,32 @@ browserResolver.sync = (...args) => {
 };
 
 /**
+* @external PackageJson
+*/
+
+/**
+* @callback ResolvePackageFilter
+* @param {external:PackageJson} pkg
+* @returns {external:PackageJson}
+*/
+
+/**
+ * @param {string[]} mainFields
+ * @returns {ResolvePackageFilter}
+ */
+function getPackageFilter (mainFields) {
+  return function packageFilter (pkg) {
+    const prop = mainFields.find((mainField) => {
+      return pkg[mainField];
+    });
+    if (prop) {
+      pkg.main = pkg[prop];
+    }
+    return pkg;
+  };
+}
+
+/**
 * @typedef {Map<string,Set<string>>} ResolvedMap
 */
 
@@ -182,6 +208,8 @@ async function traverseJSText ({
     : nodeResolution
       ? nodeResolve
       : browserResolver;
+
+  const packageFilter = getPackageFilter(mainFields);
 
   // Todo: We could make the `sourceType` depend on which of `mainFields`
   //   is resolved.
@@ -288,7 +316,7 @@ async function traverseJSText ({
             node.value,
             nodeResolution || typescriptResolution
               ? {
-                mainFields,
+                packageFilter,
                 basedir: dirname(fullPath)
               }
               : {
@@ -390,6 +418,8 @@ async function traverseJSFile ({
       ? nodeResolve
       : browserResolver;
 
+  const packageFilter = getPackageFilter(mainFields);
+
   /*
   // Was giving problems (due to `esm` testing?)
   const fullPath = require.resolve(file, {
@@ -402,7 +432,7 @@ async function traverseJSFile ({
       file,
       nodeResolution || typescriptResolution
         ? {
-          mainFields,
+          packageFilter,
           basedir: cwd
         }
         : {

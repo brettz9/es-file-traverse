@@ -1,5 +1,9 @@
 # CHANGES for `es-file-traverse`
 
+## 0.6.1
+
+- Fix: Use stable `resolve` as has `packageFilter` option we can use
+
 ## 0.6.0
 
 - Enhancement: Add `mainFields` option (defaulting to `['main']`) to allow

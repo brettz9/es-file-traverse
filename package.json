@@ -1,6 +1,6 @@
 {
   "name": "es-file-traverse",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Facilities for traversing JavaScript files",
   "author": "Brett Zamir",
   "contributors": [],
@@ -59,7 +59,7 @@
     "find-package-json": "^1.2.0",
     "globby": "^11.0.1",
     "htmlparser2": "^4.1.0",
-    "resolve": "https://github.com/brettz9/resolve#pkg-json-module"
+    "resolve": "^1.17.0"
   },
   "devDependencies": {
     "@fintechstudios/eslint-plugin-chai-as-promised": "^3.0.2",
