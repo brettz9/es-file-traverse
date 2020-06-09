@@ -9,7 +9,9 @@ const typescriptResolve = async (pth, opts) => {
 
 typescriptResolve.sync = (pth, opts = {basedir: process.cwd()}) => {
   const {found, path} = importResolverTS.resolve(
-    pth, join(opts.basedir, '/es-file-traverse-dummy.ts')
+    pth,
+    join(opts.basedir, '/es-file-traverse-dummy.ts'),
+    {...opts, basedir: undefined}
   );
   if (!found) {
     throw new Error(`File not found: ${pth}`);

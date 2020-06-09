@@ -199,7 +199,7 @@ async function traverseJSText ({
   cjs: cjsModules,
   amd: amdModules,
   node: nodeResolution,
-  mainFields,
+  mainFields = ['main'],
   typescript: typescriptResolution,
   html = false
 }) {
@@ -213,6 +213,7 @@ async function traverseJSText ({
 
   // Todo: We could make the `sourceType` depend on which of `mainFields`
   //   is resolved.
+
   const sourceType = parserOptions.sourceType === 'module' ||
       (nodeResolution && !noEsm && fullPath.endsWith('.mjs'))
     ? 'module'
@@ -316,6 +317,7 @@ async function traverseJSText ({
             node.value,
             nodeResolution || typescriptResolution
               ? {
+                // Todo: use `resolve`'s `extensions`? (here and for async)
                 packageFilter,
                 basedir: dirname(fullPath)
               }
@@ -397,7 +399,7 @@ async function traverseJSFile ({
   file,
   cwd,
   node: nodeResolution,
-  mainFields,
+  mainFields = ['main'],
   typescript: typescriptResolution,
   html = false,
   parser,

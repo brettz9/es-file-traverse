@@ -1,5 +1,12 @@
 # CHANGES for `es-file-traverse`
 
+## 0.7.0
+
+- Enhancement: pass in `packageFilter` to `eslint-import-resolver-typescript`
+    fork to allow preferring `module` to `types` (may make default for
+    `--typescript`)
+- Fix: Add `mainFields` defaultts to `traverseJSFile` and `traverseJSText`
+
 ## 0.6.1
 
 - Fix: Use stable `resolve` as has `packageFilter` option we can use
