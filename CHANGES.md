@@ -1,5 +1,10 @@
 # CHANGES for `es-file-traverse`
 
+## 0.6.0
+
+- Enhancement: Add `mainFields` option (defaulting to `['main']`) to allow
+    `node` resolution to check `module`, `browser`, etc. as well.
+
 ## 0.5.2
 
 - Fix: Proper absolute URL resolution

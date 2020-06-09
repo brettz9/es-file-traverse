@@ -173,6 +173,7 @@ async function traverseJSText ({
   cjs: cjsModules,
   amd: amdModules,
   node: nodeResolution,
+  mainFields,
   typescript: typescriptResolution,
   html = false
 }) {
@@ -182,6 +183,8 @@ async function traverseJSText ({
       ? nodeResolve
       : browserResolver;
 
+  // Todo: We could make the `sourceType` depend on which of `mainFields`
+  //   is resolved.
   const sourceType = parserOptions.sourceType === 'module' ||
       (nodeResolution && !noEsm && fullPath.endsWith('.mjs'))
     ? 'module'
@@ -285,6 +288,7 @@ async function traverseJSText ({
             node.value,
             nodeResolution || typescriptResolution
               ? {
+                mainFields,
                 basedir: dirname(fullPath)
               }
               : {
@@ -304,6 +308,7 @@ async function traverseJSText ({
           file: nodeResolution ? resolvedPath : node.value,
           cwd: dirname(fullPath),
           node: nodeResolution,
+          mainFields,
           typescript: typescriptResolution,
           resolvedSet,
           resolvedMap,
@@ -364,6 +369,7 @@ async function traverseJSFile ({
   file,
   cwd,
   node: nodeResolution,
+  mainFields,
   typescript: typescriptResolution,
   html = false,
   parser,
@@ -396,6 +402,7 @@ async function traverseJSFile ({
       file,
       nodeResolution || typescriptResolution
         ? {
+          mainFields,
           basedir: cwd
         }
         : {
@@ -458,6 +465,7 @@ async function traverseJSFile ({
     callback,
     cwd,
     node: nodeResolution,
+    mainFields,
     typescript: typescriptResolution,
     html,
     resolvedMap,
@@ -488,6 +496,7 @@ async function traverse ({
   parser,
   parserOptions = {},
   node: nodeResolution = false,
+  mainFields = ['main'],
   typescript: typescriptResolution = false,
   forceLanguage = null,
   jsExtension = ['js', 'cjs', 'mjs', 'ts'],
@@ -661,6 +670,7 @@ async function traverse ({
             file,
             cwd,
             node: nodeResolution,
+            mainFields,
             typescript: typescriptResolution,
             resolvedMap,
             parser,

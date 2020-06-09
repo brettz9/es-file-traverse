@@ -48,6 +48,13 @@ const optionDefinitions = [
       'Defaults to `false`.'
   },
   {
+    name: 'mainFields', type: String, multiple: true,
+    description: 'When using `node`, one can override default of checking ' +
+      '`main` only and check `module`, `browser`, etc. also. The first ' +
+      'values added are given priority.',
+    typeLabel: '{underline field-name}'
+  },
+  {
     name: 'typescript', type: Boolean,
     description: 'If assuming a TypeScript environment (or one otherwise ' +
       'using the TypeScript resolution algorithm). Will not be used on html ' +
