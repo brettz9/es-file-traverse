@@ -3,6 +3,9 @@
 ## 0.8.0
 
 - Linting: As per latest ash-nazg
+- Testing: Add test for erring typescript resolver to bring again to 100%
+    coverage
+- Testing: Bump timeout
 - npm: Use stable `eslint-import-resolver-typescript`
 - npm: Update devDeps/package-lock
 

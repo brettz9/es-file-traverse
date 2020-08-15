@@ -8,10 +8,9 @@ const typescriptResolve = async (pth, opts) => {
 };
 
 typescriptResolve.sync = (pth, opts) => {
-  const {basedir = process.cwd()} = opts;
   const {found, path} = importResolverTS.resolve(
     pth,
-    join(basedir, '/es-file-traverse-dummy.ts'),
+    join(opts.basedir, '/es-file-traverse-dummy.ts'),
     {...opts, basedir: undefined}
   );
   if (!found) {

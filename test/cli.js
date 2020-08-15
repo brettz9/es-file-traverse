@@ -625,6 +625,20 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) throws with bad file URL (typescript)',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--cwd', dirname(new URL(import.meta.url).pathname),
+        '--file', './fixtures/has-bad-import.js',
+        '--defaultSourceType', 'module',
+        '--typescript'
+      ]);
+      expect(stderr).to.contain('File not found');
+      expect(stdout).to.equal('');
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) silently ignores bad file URL ' +
       'with `ignoreResolutionErrors`',
     async function () {

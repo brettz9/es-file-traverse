@@ -14,6 +14,7 @@ chai.use(chaiAsPromised);
 
 describe('esFileTraverse', function () {
   it('esFileTraverse with `callback`', async function () {
+    this.timeout(5000);
     let callbackRan = false;
     const results = await esFileTraverse({
       cwd: dirname(new URL(import.meta.url).pathname),
