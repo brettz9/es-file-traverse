@@ -1,11 +1,17 @@
 # CHANGES for `es-file-traverse`
 
+## 0.8.0
+
+- Linting: As per latest ash-nazg
+- npm: Use stable `eslint-import-resolver-typescript`
+- npm: Update devDeps/package-lock
+
 ## 0.7.0
 
 - Enhancement: pass in `packageFilter` to `eslint-import-resolver-typescript`
     fork to allow preferring `module` to `types` (may make default for
     `--typescript`)
-- Fix: Add `mainFields` defaultts to `traverseJSFile` and `traverseJSText`
+- Fix: Add `mainFields` defaults to `traverseJSFile` and `traverseJSText`
 
 ## 0.6.1
 

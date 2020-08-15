@@ -393,6 +393,7 @@ async function traverseJSText ({
 
 /**
  * @param {ESFileTraverseOptionDefinitions} config
+ * @throws {Error} File not found
  * @returns {Promise<ResolvedMap>}
  */
 async function traverseJSFile ({
@@ -514,6 +515,7 @@ async function traverseJSFile ({
 
 /**
  * @param {ESFileTraverseOptionDefinitions} config
+ * @throws {Error} `noEsm` as `true` or set `cjs` or `amd` to true'
  * @returns {Promise<string[]>}
  */
 async function traverse ({
@@ -666,7 +668,6 @@ async function traverse ({
       htmlStream.pipe(parserStream).on('finish', () => {
         resolve();
       });
-      return undefined;
     });
     await seriesOrParallel(promMethods);
   }

@@ -7,10 +7,11 @@ const typescriptResolve = async (pth, opts) => {
   return await typescriptResolve.sync(pth, opts);
 };
 
-typescriptResolve.sync = (pth, opts = {basedir: process.cwd()}) => {
+typescriptResolve.sync = (pth, opts) => {
+  const {basedir = process.cwd()} = opts;
   const {found, path} = importResolverTS.resolve(
     pth,
-    join(opts.basedir, '/es-file-traverse-dummy.ts'),
+    join(basedir, '/es-file-traverse-dummy.ts'),
     {...opts, basedir: undefined}
   );
   if (!found) {
