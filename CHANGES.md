@@ -1,5 +1,13 @@
 # CHANGES for `es-file-traverse`
 
+## ?
+
+- Update: Per htmlparser2 update
+- Linting: As per latest ash-nazg
+- npm: Use stable `mocha-multi-reporters`
+- npm: Update builtin-modules, eslint-import-resolver-typescript, htmlparser2,
+    resolve
+
 ## 0.8.0
 
 - Linting: As per latest ash-nazg

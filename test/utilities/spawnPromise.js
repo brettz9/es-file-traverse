@@ -1,5 +1,6 @@
 import {spawn} from 'child_process';
 
+/* eslint-disable jsdoc/check-examples -- Chai interaction problem */
 /**
  * @param {string} path
  * @param {PlainObject|string[]} opts
@@ -8,12 +9,13 @@ import {spawn} from 'child_process';
  * @returns {Promise<SpawnResults>}
  */
 const spawnPromise = (path, opts, args, killDelay = 10000) => {
+  /* eslint-enable jsdoc/check-examples -- Chai interaction problem */
   if (Array.isArray(opts)) {
     killDelay = args || killDelay;
     args = opts;
     opts = undefined;
   }
-  // eslint-disable-next-line promise/avoid-new
+  // eslint-disable-next-line promise/avoid-new -- Promisifying
   return new Promise((resolve, reject) => {
     let stderr = '', stdout = '';
     const cli = spawn(

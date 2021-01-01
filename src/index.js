@@ -12,7 +12,9 @@ const esquery = require('esquery');
 const globby = require('globby');
 // eslint-disable-next-line no-shadow
 const fetch = require('file-fetch');
-const htmlparser2 = require('htmlparser2');
+const {
+  WritableStream: Htmlparser2WritableStream
+} = require('htmlparser2/lib/WritableStream');
 const packageJsonFinder = require('find-package-json');
 const builtinModules = require('builtin-modules');
 
@@ -282,7 +284,7 @@ async function traverseJSText ({
 
   if (callback) {
     // eslint-disable-next-line max-len
-    // eslint-disable-next-line promise/prefer-await-to-callbacks, standard/no-callback-literal, node/callback-return
+    // eslint-disable-next-line promise/prefer-await-to-callbacks, node/no-callback-literal, node/callback-return
     await callback('enter', {
       fullPath,
       text,
@@ -362,7 +364,7 @@ async function traverseJSText ({
 
     if (callback) {
       // eslint-disable-next-line max-len
-      // eslint-disable-next-line promise/prefer-await-to-callbacks, standard/no-callback-literal, node/callback-return
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, node/no-callback-literal, node/callback-return
       await callback('exit', {
         fullPath,
         text,
@@ -576,7 +578,7 @@ async function traverse ({
     const promMethods = [];
     // eslint-disable-next-line promise/avoid-new
     await new Promise((resolve, reject) => {
-      const parserStream = new htmlparser2.WritableStream(
+      const parserStream = new Htmlparser2WritableStream(
         {
           // onopentagname(name), onattribute(name, value), onclosetag(name),
           //  onprocessinginstruction(name, data),
