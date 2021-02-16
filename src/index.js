@@ -231,7 +231,7 @@ async function traverseJSText ({
     };
   }
 
-  // eslint-disable-next-line node/global-require, import/no-dynamic-require
+  // eslint-disable-next-line import/no-dynamic-require
   const parserObj = require(parser);
 
   const parseForESLintMethod = {}.hasOwnProperty.call(
@@ -559,7 +559,7 @@ async function traverse ({
 
   const resolvedMap = new Map();
   if (typeof callback === 'string') {
-    // eslint-disable-next-line node/global-require, import/no-dynamic-require
+    // eslint-disable-next-line import/no-dynamic-require
     callback = require(join(cwd, callback));
   }
 

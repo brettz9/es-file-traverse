@@ -1,12 +1,19 @@
 # CHANGES for `es-file-traverse`
 
-## ?
+## 0.9.0
 
-- Update: Per htmlparser2 update
-- Linting: As per latest ash-nazg
+- Update: Per `htmlparser2` update
+- npm: Update builtin-modules (minor), htmlparser2 (major),
+    eslint-import-resolver-typescript (minor), esquery (minor),
+    file-fetch (minor), globby (patch), resolve (minor)
+- Docs: Update CLI graphic
+
+**Dev-focused**:
+
+- Linting: As per latest `ash-nazg`
+- Testing: Fix test per espree check
 - npm: Use stable `mocha-multi-reporters`
-- npm: Update builtin-modules, eslint-import-resolver-typescript, htmlparser2,
-    resolve
+- npm: Update devDeps, including switching to new peerDeps for ash-nazg
 
 ## 0.8.0
 

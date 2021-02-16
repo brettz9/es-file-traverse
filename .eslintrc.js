@@ -52,6 +52,9 @@ module.exports = {
     }
   }, {
     files: ['*.md'],
+    processor: 'markdown/markdown'
+  }, {
+    files: ['*.md/*.js'],
     rules: {
     },
     parserOptions: {

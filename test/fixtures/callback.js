@@ -1,6 +1,6 @@
 /* eslint-env node */
 /* globals module */
-/* eslint-disable strict, no-console */
+/* eslint-disable no-console */
 'use strict';
 
 module.exports = (state, info) => {

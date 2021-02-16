@@ -486,7 +486,7 @@ describe('CLI', function () {
         '--file', './test/fixtures/main.js',
         '--no-check-package-json',
         '--parser', 'espree',
-        '--parserOptions', '{"sourceType":"module"}'
+        '--parserOptions', '{"sourceType":"module", "ecmaVersion": 2015}'
       ], 5000);
       expect(stderr).to.equal('');
       [
