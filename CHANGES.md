@@ -2,7 +2,10 @@
 
 ## 0.9.0
 
+- Update: Change `parserOptions` to default to include
+    `requireConfigFile: false` by default (for `@babel/eslint-parser`)
 - Update: Per `htmlparser2` update
+- npm: Update `babel-eslint` to `babel/eslint-parser`
 - npm: Update builtin-modules (minor), htmlparser2 (major),
     eslint-import-resolver-typescript (minor), esquery (minor),
     file-fetch (minor), globby (patch), resolve (minor)

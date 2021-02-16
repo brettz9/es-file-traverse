@@ -188,8 +188,10 @@ function getPackageFilter (mainFields) {
  */
 async function traverseJSText ({
   text,
-  parserOptions = {},
-  parser = 'babel-eslint',
+  parserOptions = {
+    requireConfigFile: false
+  },
+  parser = '@babel/eslint-parser',
   fullPath,
   callback,
   cwd,
@@ -247,7 +249,7 @@ async function traverseJSText ({
 
   const result = parserObj[
     parseForESLintMethod
-      // babel-eslint, @typescript-eslint/parser
+      // @babel/eslint-parser, @typescript-eslint/parser
       ? 'parseForESLint'
       // esprima, espree
       : 'parse'
@@ -264,10 +266,10 @@ async function traverseJSText ({
     // ecmaFeatures: {},
     // allowImportExportEverywhere: false,
 
-    // parse.js : https://github.com/babel/babel-eslint/blob/master/lib/parse.js
+    // parse.js : https://github.com/babel/babel/blob/master/eslint/babel-eslint-parser/src/index.js
     // requireConfigFile,
 
-    // analyze-scope.js : https://github.com/babel/babel-eslint/blob/master/lib/analyze-scope.js
+    // analyze-scope.js : https://github.com/babel/babel/blob/master/eslint/babel-eslint-parser/src/analyze-scope.js
     // ignoreEval: true,
     // optimistic: false,
     // directive: false,
@@ -406,7 +408,9 @@ async function traverseJSFile ({
   typescript: typescriptResolution,
   html = false,
   parser,
-  parserOptions = {},
+  parserOptions = {
+    requireConfigFile: false
+  },
   callback,
   serial,
   excludePathEntryExpression,
@@ -530,7 +534,9 @@ async function traverse ({
   pathExpression,
   excludePathExpression,
   parser,
-  parserOptions = {},
+  parserOptions = {
+    requireConfigFile: false
+  },
   node: nodeResolution = false,
   mainFields = ['main'],
   typescript: typescriptResolution = false,

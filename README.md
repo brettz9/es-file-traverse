@@ -37,7 +37,7 @@ npm i es-file-traverse
 ## Comparison to other projects
 
 This project is similar to [imports-visitor](https://www.npmjs.com/package/imports-visitor),
-but it uses `babel-eslint` so as to report ESTree (ESLint) AST.
+but it uses `@babel/eslint-parser` so as to report ESTree (ESLint) AST.
 
 ## Usage with ESLint
 

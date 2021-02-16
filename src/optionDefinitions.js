@@ -143,23 +143,23 @@ const optionDefinitions = [
   },
   {
     name: 'parser', type: String,
-    description: 'Indicates the parser to use. Unless using `babel-eslint` ' +
-      '(the default), you will need to be sure the parser is added to your ' +
-      'dependencies.',
-    typeLabel: '{underline "babel-eslint"|"espree"|"esprima"|' +
+    description: 'Indicates the parser to use. Unless using ' +
+      '`@babel/eslint-parser` (the default), you will need to be sure the ' +
+      'parser is added to your dependencies.',
+    typeLabel: '{underline "@babel/eslint-parser"|"espree"|"esprima"|' +
       '"@typescript-eslint/parser"}'
   },
   {
     name: 'parserOptions', type: String,
     description: 'Options (including `babelOptions` if desired) to pass to ' +
-      'the parser (`babel-eslint` is the one built-in by default). Defaults ' +
-      'to an object with only an auto-determined ' +
-      '`filePath` being passed in and `sourceType` set to "module" by ' +
-      'default if the file extension ends in "mjs" or to "script" if it ' +
-      'ends in "cjs" (you can manually set this as desired to force the ' +
-      'type when the type is not set by the HTML script type). Note that ' +
-      'passing in HTML files will cause `sourceType` to be auto-set ' +
-      'depending on whether it is specified as a script or module.',
+      'the parser (`@babel/eslint-parser` is the one built-in by default). ' +
+      'Defaults to an object with only `requireConfigFile: false`, and an ' +
+      'auto-determined `filePath` being passed in and `sourceType` set to ' +
+      '"module" by default if the file extension ends in "mjs" or to ' +
+      '"script" if it ends in "cjs" (you can manually set this as desired to ' +
+      'force the type when the type is not set by the HTML script type). ' +
+      'Note that passing in HTML files will cause `sourceType` to be ' +
+      'auto-set depending on whether it is specified as a script or module.',
     typeLabel: '{underline options-as-JSON-object}'
   },
   {

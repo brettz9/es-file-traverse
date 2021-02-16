@@ -50,7 +50,7 @@
   "bugs": "https://github.com/brettz9/es-file-traverse/issues",
   "dependencies": {
     "array-flat-polyfill": "^1.0.1",
-    "babel-eslint": "^10.1.0",
+    "@babel/eslint-parser": "^7.12.16",
     "builtin-modules": "^3.2.0",
     "command-line-basics": "^0.8.0",
     "eslint-import-resolver-typescript": "^2.4.0",

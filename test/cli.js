@@ -465,7 +465,8 @@ describe('CLI', function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
         '--file', './test/fixtures/main.js',
         '--no-check-package-json',
-        '--parserOptions', '{"sourceType":"module"}'
+        '--parserOptions',
+        '{"sourceType":"module", "requireConfigFile": false}'
       ], 5000);
       expect(stderr).to.equal('');
       [
