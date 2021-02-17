@@ -1,5 +1,11 @@
 # CHANGES for `es-file-traverse`
 
+## ?
+
+**Dev-focused**:
+
+- npm: update devDeps; package-lock
+
 ## 0.9.0
 
 - Update: Change `parserOptions` to default to include
