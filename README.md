@@ -149,6 +149,8 @@ going through one file's imports, then another's, etc.
     1. Option to give an error or report listing **files which were not
         traversed** but within a set of specified files.
 1. Iteration methods
+    1. Support a pnpm resolver
+        (https://www.npmjs.com/package/@pnpm/local-resolver ?)
     1. For modules, check also for `require` when Node's `module.createRequire`
         or `module.createRequireFromPath` are used.
     1. Utilize **import maps** then return that result with file name/path
