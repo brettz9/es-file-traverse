@@ -5,7 +5,7 @@
   "author": "Brett Zamir",
   "contributors": [],
   "scripts": {
-    "prepublishOnly": "run-s license-badges",
+    "prepublishOnly": "echo \"Don't use pnpm as resolve appears to break; also, later reenable run-s license-badges\"",
     "license-badge": "license-badger --corrections --uncategorizedLicenseTemplate \"\\${license} (\\${name} (\\${version}))\" --filteredTypes=nonempty --textTemplate \"License types\n(project, deps, and bundled devDeps)\" --packageJson --production badges/licenses-badge.svg",
     "license-badge-dev": "license-badger --corrections --filteredTypes=nonempty --textTemplate \"License types\n(all devDeps)\" --allDevelopment badges/licenses-badge-dev.svg",
     "license-badges": "run-s license-badge license-badge-dev",
