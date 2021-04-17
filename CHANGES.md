@@ -1,9 +1,17 @@
 # CHANGES for `es-file-traverse`
 
-## ?
+## 0.10.0
+
+**User-focused**
+
+- Fix: Add argument for`traverseJSText` and `traverseJSFile` so can pass on
+    per-instance `textSet` caching `Set`. May overly aggressively cache and
+    reuse an existing Map involving the same file.
 
 **Dev-focused**:
 
+- Linting: As per latest ash-nazg
+- npm: Update babel/eslint-parser (minor), globby (patch), htmlparser2 (minor)
 - npm: update devDeps; package-lock
 
 ## 0.9.0

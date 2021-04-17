@@ -83,8 +83,6 @@ const selectorMap = new Map([
   ['amd', esquery.parse(amd)]
 ]);
 
-const textSet = new Set();
-
 /**
  * @param {string} str
  * @returns {RegExp}
@@ -196,6 +194,7 @@ async function traverseJSText ({
   callback,
   cwd,
   resolvedMap = new Map(),
+  textSet = new Set(),
   serial,
   excludePathEntryExpression,
   ignoreResolutionErrors,
@@ -233,7 +232,7 @@ async function traverseJSText ({
     };
   }
 
-  // eslint-disable-next-line import/no-dynamic-require
+  // eslint-disable-next-line import/no-dynamic-require, node/global-require
   const parserObj = require(parser);
 
   const parseForESLintMethod = {}.hasOwnProperty.call(
@@ -346,6 +345,7 @@ async function traverseJSText ({
           typescript: typescriptResolution,
           resolvedSet,
           resolvedMap,
+          textSet,
           parser,
           parserOptions,
           callback,
@@ -419,7 +419,8 @@ async function traverseJSFile ({
   cjs: cjsModules,
   amd: amdModules,
   resolvedSet,
-  resolvedMap = new Map()
+  resolvedMap = new Map(),
+  textSet = new Set()
 }) {
   const resolver = typescriptResolution
     ? typescriptResolve
@@ -508,6 +509,7 @@ async function traverseJSFile ({
     typescript: typescriptResolution,
     html,
     resolvedMap,
+    textSet,
     serial,
     excludePathEntryExpression,
     ignoreResolutionErrors,
@@ -563,9 +565,11 @@ async function traverse ({
     parserOptions = JSON.parse(parserOptions);
   }
 
+  const textSet = new Set();
+
   const resolvedMap = new Map();
   if (typeof callback === 'string') {
-    // eslint-disable-next-line import/no-dynamic-require
+    // eslint-disable-next-line import/no-dynamic-require, node/global-require
     callback = require(join(cwd, callback));
   }
 
@@ -626,7 +630,8 @@ async function traverse ({
                 noEsm,
                 cjs: cjsModules,
                 amd: amdModules,
-                resolvedMap
+                resolvedMap,
+                textSet
               }));
             }
           },
@@ -650,6 +655,7 @@ async function traverse ({
               callback,
               cwd: dirname(join(cwd, htmlFile)),
               resolvedMap,
+              textSet,
               serial,
               excludePathEntryExpression,
               ignoreResolutionErrors,
@@ -714,6 +720,7 @@ async function traverse ({
             mainFields,
             typescript: typescriptResolution,
             resolvedMap,
+            textSet,
             parser,
             parserOptions: {
               ...parserOptions,
