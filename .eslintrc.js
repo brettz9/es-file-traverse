@@ -1,14 +1,24 @@
 'use strict';
 
+const rules = {
+  'node/exports-style': 0,
+  'no-process-exit': 0,
+
+  'compat/compat': 0,
+  'import/no-commonjs': 0,
+  'import/unambiguous': 0,
+
+  'eslint-comments/require-description': 0
+};
+
 module.exports = {
   parser: '@babel/eslint-parser',
   parserOptions: {
     requireConfigFile: false
   },
   extends: [
-    'ash-nazg/sauron-node',
-    'plugin:import/typescript',
-    'plugin:node/recommended-script'
+    'ash-nazg/sauron-node-script-overrides',
+    'plugin:import/typescript'
   ],
   env: {
     node: true,
@@ -24,7 +34,20 @@ module.exports = {
     SharedArrayBuffer: 'readonly'
   },
   overrides: [{
-    files: ['test/**'],
+    files: 'test/fixtures/**',
+    globals: {
+      require: true
+    },
+    extends: 'ash-nazg/sauron-node',
+    rules: {
+      'no-shadow': ['error', {
+        allow: ['chai']
+      }],
+      'import/extensions': 0,
+      ...rules
+    }
+  }, {
+    files: ['test/*.js', 'test/utilities/*.js'],
     env: {
       mocha: true,
       node: true
@@ -35,9 +58,9 @@ module.exports = {
       expect: true
     },
     extends: [
+      'ash-nazg/sauron-node',
       'plugin:@fintechstudios/eslint-plugin-chai-as-promised/recommended',
       'plugin:chai-expect-keywords/recommended',
-      'plugin:node/recommended-module',
       'plugin:chai-friendly/recommended',
       'plugin:chai-expect/recommended'
     ],
@@ -54,9 +77,6 @@ module.exports = {
       ]
     }
   }, {
-    files: ['*.md'],
-    processor: 'markdown/markdown'
-  }, {
     files: ['*.md/*.js'],
     rules: {
     },
@@ -66,13 +86,6 @@ module.exports = {
     }
   }],
   rules: {
-    'node/exports-style': 0,
-    'no-process-exit': 0,
-
-    'compat/compat': 0,
-    'import/no-commonjs': 0,
-    'import/unambiguous': 0,
-
-    'eslint-comments/require-description': 0
+    ...rules
   }
 };

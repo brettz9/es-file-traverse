@@ -16,7 +16,7 @@ const {
   WritableStream: Htmlparser2WritableStream
 } = require('htmlparser2/lib/WritableStream');
 const packageJsonFinder = require('find-package-json');
-const builtinModules = require('builtin-modules');
+const isBuiltinModule = require('is-builtin-module');
 
 const typescriptResolve = require('./resolvers/typescriptResolve.js');
 const nodeResolve = require('./resolvers/nodeResolve.js');
@@ -235,7 +235,7 @@ async function traverseJSText ({
   // eslint-disable-next-line import/no-dynamic-require, node/global-require
   const parserObj = require(parser);
 
-  const parseForESLintMethod = {}.hasOwnProperty.call(
+  const parseForESLintMethod = Object.prototype.hasOwnProperty.call(
     parserObj, 'parseForESLint'
   );
 
@@ -469,7 +469,7 @@ async function traverseJSFile ({
   }
 
   // Node module
-  if (nodeResolution && cjs && builtinModules.includes(fullPath)) {
+  if (nodeResolution && cjs && isBuiltinModule(fullPath)) {
     const builtinSet = resolvedMap.get('builtin') || new Set();
     builtinSet.add(fullPath);
     resolvedMap.set('builtin', builtinSet);
@@ -598,7 +598,9 @@ async function traverse ({
             lastName = name;
             lastScriptIsModule = false;
             if (name === 'script') {
-              const hasSource = {}.hasOwnProperty.call(attribs, 'src');
+              const hasSource = Object.prototype.hasOwnProperty.call(
+                attribs, 'src'
+              );
               const isScript = !attribs.type ||
                 attribs.type === 'text/javascript';
               const isModule = attribs.type === 'module';

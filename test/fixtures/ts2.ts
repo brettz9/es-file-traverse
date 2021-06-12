@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/extensions, node/no-missing-import
+// eslint-disable-next-line import/extensions
 import ts from './ts';
 
 ts();

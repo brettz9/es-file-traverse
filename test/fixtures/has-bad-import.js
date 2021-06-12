@@ -1,2 +1,2 @@
-// eslint-disable-next-line node/no-missing-import, import/no-unresolved
+// eslint-disable-next-line import/no-unresolved
 import './nonexistent-file.js';

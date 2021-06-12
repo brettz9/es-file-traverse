@@ -1,5 +1,19 @@
 # CHANGES for `es-file-traverse`
 
+## 0.11.0
+
+**User-focused**
+
+- Fix(npm): Allow `fs/promises` to be caught with `builtinModules` by
+    dropping `builtin-modules` in favor of `is-builtin-module`
+- License: Update badges
+- npm: Update `@babel/eslint-parser` (minor), `file-fetch` (minor)
+
+**Dev-focused**:
+- Linting: As per latest ash-nazg
+- npm: Restore `license-badges` script
+- npm: Update devDeps.
+
 ## 0.10.0
 
 **User-focused**

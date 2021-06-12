@@ -1,5 +1,6 @@
 import {dirname} from 'path';
 
+// eslint-disable-next-line no-shadow -- Overrides
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 

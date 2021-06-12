@@ -21,6 +21,7 @@ const nodeResolve = (path, opts = {}) => {
   });
 };
 
+// eslint-disable-next-line unicorn/prefer-prototype-methods -- Fine here
 nodeResolve.sync = _resolve.sync.bind(_resolve);
 
 module.exports = nodeResolve;
