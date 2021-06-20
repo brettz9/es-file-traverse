@@ -1,5 +1,9 @@
 # CHANGES for `es-file-traverse`
 
+## 1.0.1
+
+- Ensure `singleTraverse` works automatically
+
 ## 1.0.0
 
 - Breaking refactoring: Switch to ESM in source and `main`/`exports`

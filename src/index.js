@@ -196,6 +196,7 @@ async function traverseJSText ({
   excludePathEntryExpression,
   ignoreResolutionErrors,
   noEsm,
+  singleTraverse,
   cjs: cjsModules,
   amd: amdModules,
   node: nodeResolution,
@@ -379,14 +380,16 @@ async function traverseJSText ({
   const resolvedSet = new Set();
   resolvedSet.add(fullPath);
   const promMethods = [];
-  if (!noEsm) {
-    await esqueryTraverse('esm');
-  }
-  if (cjsModules) {
-    await esqueryTraverse('cjs');
-  }
-  if (amdModules) {
-    await esqueryTraverse('amd');
+  if (!singleTraverse) {
+    if (!noEsm) {
+      await esqueryTraverse('esm');
+    }
+    if (cjsModules) {
+      await esqueryTraverse('cjs');
+    }
+    if (amdModules) {
+      await esqueryTraverse('amd');
+    }
   }
 
   return resolvedMap;
@@ -412,6 +415,7 @@ async function traverseJSFile ({
   serial,
   excludePathEntryExpression,
   ignoreResolutionErrors,
+  singleTraverse,
   noEsm,
   cjs: cjsModules,
   amd: amdModules,
@@ -501,6 +505,7 @@ async function traverseJSFile ({
     fullPath,
     callback,
     cwd,
+    singleTraverse,
     node: nodeResolution,
     mainFields,
     typescript: typescriptResolution,
@@ -627,6 +632,7 @@ async function traverse ({
                 serial,
                 excludePathEntryExpression,
                 ignoreResolutionErrors,
+                singleTraverse,
                 noEsm,
                 cjs: cjsModules,
                 amd: amdModules,
@@ -659,6 +665,7 @@ async function traverse ({
               serial,
               excludePathEntryExpression,
               ignoreResolutionErrors,
+              singleTraverse,
               noEsm,
               cjs: cjsModules,
               amd: amdModules,
@@ -731,6 +738,7 @@ async function traverse ({
             callback,
             excludePathEntryExpression,
             ignoreResolutionErrors,
+            singleTraverse,
             noEsm,
             cjs: cjsModules,
             amd: amdModules
