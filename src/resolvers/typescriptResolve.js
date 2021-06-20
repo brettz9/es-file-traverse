@@ -1,7 +1,5 @@
-'use strict';
-
-const {join} = require('path');
-const importResolverTS = require('eslint-import-resolver-typescript');
+import {join} from 'path';
+import importResolverTS from 'eslint-import-resolver-typescript';
 
 const typescriptResolve = async (pth, opts) => {
   return await typescriptResolve.sync(pth, opts);
@@ -19,4 +17,4 @@ typescriptResolve.sync = (pth, opts) => {
   return path;
 };
 
-module.exports = typescriptResolve;
+export default typescriptResolve;

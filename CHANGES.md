@@ -1,5 +1,10 @@
 # CHANGES for `es-file-traverse`
 
+## 1.0.0
+
+- Breaking refactoring: Switch to ESM in source and `main`/`exports`
+- Breaking change: Require `mdoule`
+
 ## 0.12.2
 
 - Ensure `command-line-basics` published dep.

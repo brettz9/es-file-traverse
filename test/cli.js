@@ -404,19 +404,54 @@ describe('CLI', function () {
   );
 
   it(
+    'esFileTraverse binary (file) - cjs relying on default for type',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/package-json-empty/cjs.js',
+        '--cjs'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        '/test/fixtures/package-json-empty/cjs.js',
+        '/test/fixtures/package-json-empty/cjs2.js'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
+    'esFileTraverse binary (file) - cjs relying on default for type',
+    async function () {
+      const {stdout, stderr} = await spawnPromise(cliPath, [
+        '--file', './test/fixtures/package-json-empty/cjs.cjs',
+        '--node',
+        '--cjs'
+      ], 5000);
+      expect(stderr).to.equal('');
+      [
+        '/test/fixtures/package-json-empty/cjs.cjs',
+        '/test/fixtures/package-json-empty/cjs2.cjs'
+      ].forEach((expectedFile) => {
+        expect(stdout).to.include(expectedFile);
+      });
+    }
+  );
+
+  it(
     'esFileTraverse binary (file) - TypeScript',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
-        '--file', './test/fixtures/ts1.ts',
+        '--file', './test/fixtures/package-json-empty/ts1.ts',
         '--typescript',
         '--parser', '@typescript-eslint/parser'
       ], 5000);
       expect(stderr).to.equal('');
       [
-        '/test/fixtures/ts1.ts',
-        '/test/fixtures/ts2.ts',
-        '/test/fixtures/ts/index.ts',
-        '/test/fixtures/ts/ts3.ts'
+        '/test/fixtures/package-json-empty/ts1.ts',
+        '/test/fixtures/package-json-empty/ts2.ts',
+        '/test/fixtures/package-json-empty/ts/index.ts',
+        '/test/fixtures/package-json-empty/ts/ts3.ts'
       ].forEach((expectedFile) => {
         expect(stdout).to.include(expectedFile);
       });

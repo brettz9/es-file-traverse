@@ -1,24 +1,22 @@
-'use strict';
-
-const {createReadStream, writeFile: writeFileOrig} = require('fs');
-const {dirname, join, resolve: pathResolve} = require('path');
-const {promisify} = require('util');
+import {createReadStream, writeFile as writeFileOrig} from 'fs';
+import {dirname, join, resolve as pathResolve} from 'path';
+import {promisify} from 'util';
 
 // eslint-disable-next-line no-shadow
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-const esquery = require('esquery');
-const globby = require('globby');
+import esquery from 'esquery';
+import globby from 'globby';
 // eslint-disable-next-line no-shadow
-const fetch = require('file-fetch');
-const {
-  WritableStream: Htmlparser2WritableStream
-} = require('htmlparser2/lib/WritableStream');
-const packageJsonFinder = require('find-package-json');
-const isBuiltinModule = require('is-builtin-module');
+import fetch from 'file-fetch';
+import {
+  WritableStream as Htmlparser2WritableStream
+} from 'htmlparser2/lib/WritableStream.js';
+import packageJsonFinder from 'find-package-json';
+import isBuiltinModule from 'is-builtin-module';
 
-const typescriptResolve = require('./resolvers/typescriptResolve.js');
-const nodeResolve = require('./resolvers/nodeResolve.js');
+import typescriptResolve from './resolvers/typescriptResolve.js';
+import nodeResolve from './resolvers/nodeResolve.js';
 
 const writeFile = promisify(writeFileOrig);
 
@@ -231,8 +229,8 @@ async function traverseJSText ({
     };
   }
 
-  // eslint-disable-next-line import/no-dynamic-require, node/global-require
-  const parserObj = require(parser);
+  // eslint-disable-next-line no-unsanitized/method -- User-specified
+  const parserObj = (await import(parser)).default;
 
   const parseForESLintMethod = Object.prototype.hasOwnProperty.call(
     parserObj, 'parseForESLint'
@@ -569,8 +567,8 @@ async function traverse ({
 
   const resolvedMap = new Map();
   if (typeof callback === 'string') {
-    // eslint-disable-next-line import/no-dynamic-require, node/global-require
-    callback = require(join(cwd, callback));
+    // eslint-disable-next-line no-unsanitized/method -- User-specified
+    callback = (await import(join(cwd, callback))).default;
   }
 
   const files = noGlobs
@@ -669,9 +667,8 @@ async function traverse ({
             }));
           },
           // This should only occur with a stream error
-          // istanbul ignore next
+          /* c8 ignore next 3 */
           onerror (err) {
-            // istanbul ignore next
             reject(err);
           }
         },
@@ -799,6 +796,4 @@ async function traverse ({
   return filesArr;
 }
 
-exports.traverseJSText = traverseJSText;
-exports.traverseJSFile = traverseJSFile;
-exports.traverse = traverse;
+export {traverseJSText, traverseJSFile, traverse};

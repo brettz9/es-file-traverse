@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-'use strict';
+import {fileURLToPath} from 'url';
+import {join, dirname} from 'path';
 
-const {join} = require('path');
-const {cliBasics} = require('command-line-basics');
-const {traverse: mainScript} = require('../src/index.js');
+import {cliBasics} from 'command-line-basics';
+import {traverse as mainScript} from '../src/index.js';
 
-const optionDefinitions = cliBasics(
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const optionDefinitions = await cliBasics(
   join(__dirname, '../src/optionDefinitions.js'), {
     commandLineArgsOptions: {
       camelCase: true

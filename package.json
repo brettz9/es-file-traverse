@@ -1,6 +1,12 @@
 {
   "name": "es-file-traverse",
   "version": "0.12.2",
+  "type": "module",
+  "exports": "./src/index.js",
+  "main": "./src/index.js",
+  "bin": {
+    "es-file-traverse": "./bin/cli.js"
+  },
   "description": "Facilities for traversing JavaScript files",
   "author": "Brett Zamir",
   "contributors": [],
@@ -23,13 +29,13 @@
     "lint": "npm run eslint",
     "coverage-badge": "coveradge badges/coverage-badge.svg",
     "mocha": "mocha",
-    "nyc": "echo 'Removing cache which seems to blank out istanbul coverage when breaking out early' && rm -Rf node_modules/.cache && nyc npm run mocha && npm run coverage-badge",
-    "test": "npm run eslint && npm run nyc"
+    "c8": "echo 'Removing cache which seems to blank out istanbul coverage when breaking out early' && rm -Rf node_modules/.cache && c8 npm run mocha && npm run coverage-badge",
+    "test": "npm run eslint && npm run c8"
   },
   "engines": {
     "node": ">=14.0.0"
   },
-  "nyc": {
+  "c8": {
     "reporter": [
       "lcov",
       "json-summary",
@@ -42,15 +48,11 @@
     "eslint",
     "files"
   ],
-  "main": "./src/index.js",
-  "bin": {
-    "es-file-traverse": "./bin/cli.js"
-  },
   "homepage": "https://github.com/brettz9/es-file-traverse",
   "bugs": "https://github.com/brettz9/es-file-traverse/issues",
   "dependencies": {
     "@babel/eslint-parser": "^7.14.5",
-    "command-line-basics": "^0.8.0",
+    "command-line-basics": "^1.0.1",
     "eslint-import-resolver-typescript": "^2.4.0",
     "esquery": "^1.4.0",
     "file-fetch": "^1.7.0",
@@ -61,9 +63,11 @@
     "resolve": "^1.20.0"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-top-level-await": "^7.14.5",
     "@brettz9/eslint-plugin": "^1.0.3",
     "@fintechstudios/eslint-plugin-chai-as-promised": "^3.1.0",
     "@typescript-eslint/parser": "^4.27.0",
+    "c8": "^7.7.3",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "command-line-publish": "^1.0.0",
@@ -89,13 +93,11 @@
     "eslint-plugin-radar": "^0.2.1",
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-unicorn": "^33.0.1",
-    "esm": "^3.2.25",
     "license-badger": "^0.19.0",
-    "mocha": "^8.4.0",
+    "mocha": "^9.0.1",
     "mocha-badge-generator": "^0.9.0",
     "mocha-multi-reporters": "^1.5.1",
     "npm-run-all": "^4.1.5",
-    "nyc": "^15.1.0",
     "typescript": "^4.3.4"
   }
 }

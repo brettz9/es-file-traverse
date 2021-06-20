@@ -1,11 +1,9 @@
-'use strict';
-
 /*
 import nodeResolve from './nodeResolve.js';
 await nodeResolve('tap', { basedir: __dirname });
 */
 
-const _resolve = require('resolve');
+import _resolve from 'resolve';
 
 const nodeResolve = (path, opts = {}) => {
   // eslint-disable-next-line promise/avoid-new
@@ -24,4 +22,4 @@ const nodeResolve = (path, opts = {}) => {
 // eslint-disable-next-line unicorn/prefer-prototype-methods -- Fine here
 nodeResolve.sync = _resolve.sync.bind(_resolve);
 
-module.exports = nodeResolve;
+export default nodeResolve;

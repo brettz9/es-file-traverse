@@ -1,4 +1,8 @@
-'use strict';
+import {readFile} from 'fs/promises';
+
+const pkg = JSON.parse(
+  await readFile(new URL('../package.json', import.meta.url))
+);
 
 /**
  * @todo Should really get this built along with the schema below from a common
@@ -200,8 +204,7 @@ const cliSections = [
   {
     header: 'es-file-traverse',
     // Add italics: `{italic textToItalicize}`
-    // eslint-disable-next-line node/global-require
-    content: require('../package.json').description
+    content: pkg.description
   },
   {
     header: 'Options',
@@ -209,5 +212,4 @@ const cliSections = [
   }
 ];
 
-exports.sections = cliSections;
-exports.definitions = optionDefinitions;
+export {cliSections as sections, optionDefinitions as definitions};

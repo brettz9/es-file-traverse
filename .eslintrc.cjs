@@ -17,7 +17,7 @@ module.exports = {
     requireConfigFile: false
   },
   extends: [
-    'ash-nazg/sauron-node-script-overrides',
+    'ash-nazg/sauron-node-overrides',
     'plugin:import/typescript'
   ],
   env: {
@@ -53,8 +53,6 @@ module.exports = {
       node: true
     },
     globals: {
-      require: true,
-      __dirname: true,
       expect: true
     },
     extends: [
