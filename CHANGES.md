@@ -1,5 +1,13 @@
 # CHANGES for `es-file-traverse`
 
+## 0.12.2
+
+- Ensure `command-line-basics` published dep.
+
+## 0.12.1
+
+- Fix: Revert `command-line-basics`
+
 ## 0.12.0
 
 **User-focused**

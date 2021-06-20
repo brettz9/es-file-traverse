@@ -1,6 +1,6 @@
 {
   "name": "es-file-traverse",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "description": "Facilities for traversing JavaScript files",
   "author": "Brett Zamir",
   "contributors": [],
@@ -50,6 +50,7 @@
   "bugs": "https://github.com/brettz9/es-file-traverse/issues",
   "dependencies": {
     "@babel/eslint-parser": "^7.14.5",
+    "command-line-basics": "^0.8.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "esquery": "^1.4.0",
     "file-fetch": "^1.7.0",
@@ -65,7 +66,6 @@
     "@typescript-eslint/parser": "^4.27.0",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
-    "command-line-basics": "^0.8.0",
     "command-line-publish": "^1.0.0",
     "coveradge": "^0.7.0",
     "eslint": "^7.29.0",
