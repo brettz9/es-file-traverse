@@ -7,7 +7,6 @@ const {promisify} = require('util');
 // eslint-disable-next-line no-shadow
 const crypto = require('crypto');
 
-require('array-flat-polyfill');
 const esquery = require('esquery');
 const globby = require('globby');
 // eslint-disable-next-line no-shadow
@@ -547,6 +546,7 @@ async function traverse ({
   htmlExtension = ['htm', 'html'],
   ignoreResolutionErrors,
   noEsm = false,
+  singleTraverse = false,
   cjs: cjsModules = false,
   amd: amdModules = false,
   noCheckPackageJson,
@@ -555,7 +555,7 @@ async function traverse ({
   format = 'none',
   includeType = []
 }) {
-  if (noEsm && !cjsModules && !amdModules) {
+  if (!singleTraverse && noEsm && !cjsModules && !amdModules) {
     throw new Error(
       'You must specify `noEsm` as `true` or set `cjs` or `amd` to true'
     );

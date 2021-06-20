@@ -22,6 +22,10 @@ const optionDefinitions = [
       'to `true` to disable. Defaults to `false`.'
   },
   {
+    name: 'singleTraverse', type: Boolean,
+    description: 'Whether to avoid nested traversal.'
+  },
+  {
     name: 'callback', type: String,
     description: 'Require path to be passed intermediate AST. Passed ' +
       '"enter" or "exit" and an object with `fullPath`, `text`, and ' +

@@ -1,5 +1,16 @@
 # CHANGES for `es-file-traverse`
 
+## 0.12.0
+
+**User-focused**
+
+- Breaking change: Node 14+
+- Enhancement: Add `singleTraverse` option (avoid deep traversing)
+
+**Dev-focused**:
+
+- npm: Update devDeps.
+
 ## 0.11.0
 
 **User-focused**
