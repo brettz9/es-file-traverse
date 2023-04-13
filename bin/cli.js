@@ -19,7 +19,6 @@ if (!optionDefinitions) { // cliBasics handled
   process.exit();
 }
 
-(async () => {
 try {
   await mainScript({
     format: 'strings', // (Overridable) default for CLI only
@@ -29,4 +28,3 @@ try {
   // eslint-disable-next-line no-console
   console.error(err);
 }
-})();

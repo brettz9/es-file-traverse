@@ -1,7 +1,7 @@
 'use strict';
 
 const rules = {
-  'node/exports-style': 0,
+  'n/exports-style': 0,
   'no-process-exit': 0,
 
   'compat/compat': 0,
@@ -63,7 +63,7 @@ module.exports = {
       'plugin:chai-expect/recommended'
     ],
     rules: {
-      'node/no-unsupported-features/es-syntax': ['error', {
+      'n/no-unsupported-features/es-syntax': ['error', {
         ignores: ['dynamicImport', 'modules']
       }],
       'compat/compat': 0,

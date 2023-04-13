@@ -234,6 +234,7 @@ async function traverseJSText ({
   let parserObj = (await import(parser)).default;
 
   if (!parserObj) {
+    // eslint-disable-next-line no-unsanitized/method -- User-specified
     parserObj = await import(parser);
   }
 
@@ -287,7 +288,7 @@ async function traverseJSText ({
 
   if (callback) {
     // eslint-disable-next-line max-len
-    // eslint-disable-next-line promise/prefer-await-to-callbacks, node/no-callback-literal, node/callback-return
+    // eslint-disable-next-line promise/prefer-await-to-callbacks, n/no-callback-literal, n/callback-return
     await callback('enter', {
       fullPath,
       text,
@@ -368,7 +369,7 @@ async function traverseJSText ({
 
     if (callback) {
       // eslint-disable-next-line max-len
-      // eslint-disable-next-line promise/prefer-await-to-callbacks, node/no-callback-literal, node/callback-return
+      // eslint-disable-next-line promise/prefer-await-to-callbacks, n/no-callback-literal, n/callback-return
       await callback('exit', {
         fullPath,
         text,

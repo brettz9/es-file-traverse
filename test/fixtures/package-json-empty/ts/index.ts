@@ -1,2 +1,2 @@
-// eslint-disable-next-line node/file-extension-in-import
+// eslint-disable-next-line n/file-extension-in-import
 import './ts3';
