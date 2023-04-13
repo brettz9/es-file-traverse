@@ -11,7 +11,7 @@ import {globby} from 'globby';
 import fetch from 'file-fetch';
 import {
   WritableStream as Htmlparser2WritableStream
-} from 'htmlparser2/lib/WritableStream.js';
+} from 'htmlparser2/lib/WritableStream';
 import packageJsonFinder from 'find-package-json';
 import isBuiltinModule from 'is-builtin-module';
 
