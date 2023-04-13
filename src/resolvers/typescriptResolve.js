@@ -1,5 +1,5 @@
 import {join} from 'path';
-import importResolverTS from 'eslint-import-resolver-typescript';
+import * as importResolverTS from 'eslint-import-resolver-typescript';
 
 const typescriptResolve = async (pth, opts) => {
   return await typescriptResolve.sync(pth, opts);

@@ -6,7 +6,7 @@ import {promisify} from 'util';
 import crypto from 'crypto';
 
 import esquery from 'esquery';
-import globby from 'globby';
+import {globby} from 'globby';
 // eslint-disable-next-line no-shadow
 import fetch from 'file-fetch';
 import {
@@ -231,7 +231,11 @@ async function traverseJSText ({
   }
 
   // eslint-disable-next-line no-unsanitized/method -- User-specified
-  const parserObj = (await import(parser)).default;
+  let parserObj = (await import(parser)).default;
+
+  if (!parserObj) {
+    parserObj = await import(parser);
+  }
 
   const parseForESLintMethod = Object.prototype.hasOwnProperty.call(
     parserObj, 'parseForESLint'

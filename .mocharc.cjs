@@ -8,6 +8,6 @@ module.exports = {
     'badge_output=doc-includes/tests-badge.svg'
   ],
   require: [
-    'chai/register-expect'
+    'chai/register-expect.js'
   ]
 };
