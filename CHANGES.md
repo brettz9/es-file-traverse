@@ -1,5 +1,12 @@
 # CHANGES for `es-file-traverse`
 
+## 1.1.0
+
+- chore: update deps. (babel/eslint-parser, command-line-basics,
+    eslint-import-resolver-typescript, esquery, globby, is-builtin-module,
+    resolve, htmlparser2), devDeps.
+- chore: update license badges and CLI badge
+
 ## 1.0.1
 
 - Ensure `singleTraverse` works automatically
