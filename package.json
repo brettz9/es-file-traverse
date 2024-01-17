@@ -24,7 +24,7 @@
     "eslint-badge": "eslint-formatter-badger --eslintCache --outputPath badges/eslint-badge.svg .",
     "eslint-3rdparty-badge": "eslint-formatter-badger --eslintCache --mainTemplate=\"ESLint 3rd party light audit (\\${ruleMapCount} rules against \\${numFiles} files)\" --filteredTypes intrusive,vulnerability --ruleMap .eslintRuleTypeMap.json --outputPath badges/eslint-thirdparty.svg --noEslintInlineConfig --noUseEslintIgnore --noUseEslintrc --eslintConfigPath .eslintrc-3rdparty.js `node ./bin/cli.js --file ./bin/cli.js --node --cjs`",
     "eslint-badges": "npm run eslint-badge && npm run eslint-3rdparty-badge",
-    "eslint-3rdparty": "eslint --cache --no-inline-config --no-ignore --no-eslintrc --config .eslintrc-3rdparty.js `node ./bin/cli.js --file ./bin/cli.js --node --cjs`",
+    "eslint-3rdparty": "eslint --cache --no-inline-config --no-ignore --no-eslintrc --config .eslintrc-3rdparty.cjs `node ./bin/cli.js --file ./bin/cli.js --node --cjs`",
     "eslint": "eslint --cache --ext=js,md,html .",
     "lint": "npm run eslint",
     "coverage-badge": "coveradge badges/coverage-badge.svg",
