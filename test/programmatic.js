@@ -1,8 +1,10 @@
 import {dirname} from 'path';
 
 // eslint-disable-next-line no-shadow -- Overrides
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import * as chai from 'chai';
+
+// eslint-disable-next-line import/no-unresolved -- Bug: https://github.com/import-js/eslint-plugin-import/issues/2703
+import chaiAsPromised from '@rvagg/chai-as-promised';
 
 import {
   traverse as esFileTraverse,
@@ -10,6 +12,9 @@ import {
 } from '../src/index.js';
 import nodeResolve from '../src/resolvers/nodeResolve.js';
 import typescriptResolve from '../src/resolvers/typescriptResolve.js';
+
+// eslint-disable-next-line no-shadow -- Not added
+const {expect} = chai;
 
 chai.use(chaiAsPromised);
 

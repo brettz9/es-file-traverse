@@ -153,8 +153,8 @@ browserResolver.sync = (...args) => {
 
 /**
 * @callback ResolvePackageFilter
-* @param {external:PackageJson} pkg
-* @returns {external:PackageJson}
+* @param {PackageJson} pkg
+* @returns {PackageJson}
 */
 
 /**
@@ -189,7 +189,7 @@ async function traverseJSText ({
   parser = '@babel/eslint-parser',
   fullPath,
   callback,
-  cwd,
+  // cwd,
   resolvedMap = new Map(),
   textSet = new Set(),
   serial,
@@ -287,7 +287,7 @@ async function traverseJSText ({
   // console.log('ast', ast);
 
   if (callback) {
-    // eslint-disable-next-line max-len
+    // eslint-disable-next-line @stylistic/max-len
     // eslint-disable-next-line promise/prefer-await-to-callbacks, n/no-callback-literal, n/callback-return
     await callback('enter', {
       fullPath,
@@ -307,7 +307,7 @@ async function traverseJSText ({
     esquery.traverse(
       ast,
       selector,
-      (node, parent, ancestry) => {
+      (node /* , parent, ancestry */) => {
         // // eslint-disable-next-line no-console
         // console.log('esquery node', node);
         /*
@@ -368,7 +368,7 @@ async function traverseJSText ({
     );
 
     if (callback) {
-      // eslint-disable-next-line max-len
+      // eslint-disable-next-line @stylistic/max-len
       // eslint-disable-next-line promise/prefer-await-to-callbacks, n/no-callback-literal, n/callback-return
       await callback('exit', {
         fullPath,

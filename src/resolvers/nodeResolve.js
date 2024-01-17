@@ -9,7 +9,7 @@ const nodeResolve = (path, opts = {}) => {
   // eslint-disable-next-line promise/avoid-new
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line promise/prefer-await-to-callbacks
-    _resolve(path, opts, (err, res, pkg) => {
+    _resolve(path, opts, (err, res /* , pkg */) => {
       if (err) {
         reject(err);
         return;

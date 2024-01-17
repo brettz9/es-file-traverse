@@ -14,6 +14,7 @@ const rules = {
 module.exports = {
   parser: '@babel/eslint-parser',
   parserOptions: {
+    ecmaVersion: 2021,
     requireConfigFile: false
   },
   extends: [
@@ -52,9 +53,6 @@ module.exports = {
       mocha: true,
       node: true
     },
-    globals: {
-      expect: true
-    },
     extends: [
       'ash-nazg/sauron-node',
       'plugin:@fintechstudios/eslint-plugin-chai-as-promised/recommended',
@@ -79,7 +77,7 @@ module.exports = {
     rules: {
     },
     parserOptions: {
-      ecmaVersion: 2018,
+      ecmaVersion: 2021,
       sourceType: 'module'
     }
   }],
