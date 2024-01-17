@@ -126,7 +126,7 @@ Once we are linting files from our own projects, and particularly when we are
 linting third party dependencies, we may wish to inform consumers of our
 project of the degree to which we have looked out for weaknesses, such as by
 listing the number of rules passing or the types of rules (e.g., for
-vulernabilities or intrusive code).
+vulnerabilities or intrusive code).
 
 See [eslint-formatter-badger](https://github.com/brettz9/eslint-formatter-badger)
 for more on how to do this, in particular the section
