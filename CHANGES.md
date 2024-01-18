@@ -1,5 +1,11 @@
 # CHANGES for `es-file-traverse`
 
+## 1.2.0
+
+- feat: hack to support `exports` without `main`
+- chore: update deps., devDeps. and lint
+- chore: update license badges and CLI badge
+
 ## 1.1.0
 
 - chore: update deps. (babel/eslint-parser, command-line-basics,

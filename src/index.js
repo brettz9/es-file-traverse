@@ -5,6 +5,7 @@ import {promisify} from 'util';
 // eslint-disable-next-line no-shadow
 import crypto from 'crypto';
 
+import * as resolveExports from 'resolve.exports';
 import esquery from 'esquery';
 import {globby} from 'globby';
 // eslint-disable-next-line no-shadow
@@ -168,6 +169,10 @@ function getPackageFilter (mainFields) {
     });
     if (prop) {
       pkg.main = pkg[prop];
+    } else if (!pkg.main && pkg.exports) {
+      // Hack for https://github.com/browserify/resolve/issues/222
+      // Doesn't solve `package.json` `imports`, however
+      pkg.main = resolveExports.exports(pkg, '.')[0];
     }
     return pkg;
   };
