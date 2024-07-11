@@ -156,7 +156,7 @@ going through one file's imports, then another's, etc.
     1. Utilize **import maps** then return that result with file name/path
         (and module type used, e.g., if multiple module types
         are being queried).
-    1. Handle **dynamic `require` or `import`** (or `define`?) (e.g., pass
+    1. Handle **dynamic `require`** (or `define`?) (e.g., pass
         back the file name and expression)?
     1. Support **transpiling** (e.g., Rollup with node-resolve and CJS plugins)
     1. **`fetch` or `XMLHttpRequest`** could be used with `eval` but that
