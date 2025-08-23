@@ -1,14 +1,12 @@
 #!/usr/bin/env node
-import {fileURLToPath} from 'url';
-import {join, dirname} from 'path';
 
 import {cliBasics} from 'command-line-basics';
 import {traverse as mainScript} from '../src/index.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 const optionDefinitions = await cliBasics(
-  join(__dirname, '../src/optionDefinitions.js'), {
+  import.meta.dirname + '/../src/optionDefinitions.js',
+  {
+    packageJsonPath: import.meta.dirname + '/../package.json',
     commandLineArgsOptions: {
       camelCase: true
     }

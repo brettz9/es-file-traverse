@@ -1,5 +1,10 @@
 # CHANGES for `es-file-traverse`
 
+## 2.0.0
+
+- fix: `command-line-basics` notifier checking
+- chore: update deps. and devDeps.
+
 ## 1.2.0
 
 - feat: hack to support `exports` without `main`

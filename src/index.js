@@ -12,7 +12,7 @@ import {globby} from 'globby';
 import fetch from 'file-fetch';
 import {
   WritableStream as Htmlparser2WritableStream
-} from 'htmlparser2/lib/WritableStream';
+} from 'htmlparser2/WritableStream';
 import packageJsonFinder from 'find-package-json';
 import isBuiltinModule from 'is-builtin-module';
 
