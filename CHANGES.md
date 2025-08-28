@@ -1,5 +1,9 @@
 # CHANGES for `es-file-traverse`
 
+## 2.0.1
+
+- fix: suppress and log error if not finding exports for package
+
 ## 2.0.0
 
 - fix: `command-line-basics` notifier checking

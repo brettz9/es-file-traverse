@@ -172,7 +172,12 @@ function getPackageFilter (mainFields) {
     } else if (!pkg.main && pkg.exports) {
       // Hack for https://github.com/browserify/resolve/issues/222
       // Doesn't solve `package.json` `imports`, however
-      pkg.main = resolveExports.exports(pkg, '.')[0];
+      try {
+        pkg.main = resolveExports.exports(pkg, '.')[0];
+      } catch (err) {
+        // eslint-disable-next-line no-console -- Info
+        console.error('Error finding `.` exports in ' + pkg.name);
+      }
     }
     return pkg;
   };
