@@ -87,10 +87,10 @@ const selectorMap = new Map([
  */
 function getRegexFromString (str) {
   // eslint-disable-next-line prefer-named-capture-group
-  const withFlags = str.match(/^\/(.*)\/(\w*)$/u);
+  const withFlags = str.match(/^\/(.*)\/(\w*)$/v);
   return withFlags
     ? new RegExp(withFlags[1], withFlags[2])
-    : new RegExp(str, 'u');
+    : new RegExp(str, 'v');
 }
 
 /**
@@ -134,7 +134,7 @@ function findNearestPackageJsonType (file) {
 }
 
 const browserResolver = (file, {basedir, html}) => {
-  if (!html && (/^[^/.]/u).test(file)) {
+  if (!html && (/^[^\/.]/v).test(file)) {
     throw new Error('Browser module imports must begin with `/` or `.`');
   }
   return join(basedir, new URL(
@@ -169,6 +169,7 @@ function getPackageFilter (mainFields) {
     });
     if (prop) {
       pkg.main = pkg[prop];
+    /* c8 ignore next 10 -- Not presently applied? */
     } else if (!pkg.main && pkg.exports) {
       // Hack for https://github.com/browserify/resolve/issues/222
       // Doesn't solve `package.json` `imports`, however
@@ -240,11 +241,11 @@ async function traverseJSText ({
     };
   }
 
-  // eslint-disable-next-line no-unsanitized/method -- User-specified
+  // // eslint-disable-next-line no-unsanitized/method -- User-specified
   let parserObj = (await import(parser)).default;
 
   if (!parserObj) {
-    // eslint-disable-next-line no-unsanitized/method -- User-specified
+    // // eslint-disable-next-line no-unsanitized/method -- User-specified
     parserObj = await import(parser);
   }
 
@@ -253,6 +254,7 @@ async function traverseJSText ({
   );
 
   // Avoid bulking up memory use with full text
+  // eslint-disable-next-line sonarjs/hashing -- Safe
   const hash = crypto.createHash('md5').update(fullPath + text).digest('hex');
   if (textSet.has(hash)) {
     return resolvedMap;
@@ -392,8 +394,7 @@ async function traverseJSText ({
     await seriesOrParallel(promMethods);
   }
 
-  const resolvedSet = new Set();
-  resolvedSet.add(fullPath);
+  const resolvedSet = new Set([fullPath]);
   const promMethods = [];
   if (!singleTraverse) {
     if (!noEsm) {
@@ -587,7 +588,7 @@ async function traverse ({
 
   const resolvedMap = new Map();
   if (typeof callback === 'string') {
-    // eslint-disable-next-line no-unsanitized/method -- User-specified
+    // // eslint-disable-next-line no-unsanitized/method -- User-specified
     callback = (await import(join(cwd, callback))).default;
   }
 

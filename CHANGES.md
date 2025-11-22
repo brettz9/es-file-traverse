@@ -1,5 +1,9 @@
 # CHANGES for `es-file-traverse`
 
+## 3.0.0 (unreleased)
+
+- chore: bump Node 22 to 22.16.0+
+
 ## 2.0.1
 
 - fix: suppress and log error if not finding exports for package

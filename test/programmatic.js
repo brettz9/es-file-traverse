@@ -1,6 +1,5 @@
 import {dirname} from 'path';
 
-// eslint-disable-next-line no-shadow -- Overrides
 import * as chai from 'chai';
 
 // eslint-disable-next-line import/no-unresolved -- Bug: https://github.com/import-js/eslint-plugin-import/issues/2703
@@ -13,7 +12,6 @@ import {
 import nodeResolve from '../src/resolvers/nodeResolve.js';
 import typescriptResolve from '../src/resolvers/typescriptResolve.js';
 
-// eslint-disable-next-line no-shadow -- Not added
 const {expect} = chai;
 
 chai.use(chaiAsPromised);
@@ -49,7 +47,7 @@ describe('esFileTraverse', function () {
       file: './fixtures/has-bad-import.js',
       node: true,
       defaultSourceType: 'module'
-    })).to.be.rejectedWith(Error, /Cannot find module/u);
+    })).to.be.rejectedWith(Error, /Cannot find module/v);
   });
 });
 

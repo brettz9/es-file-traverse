@@ -1,7 +1,7 @@
 import {readFile as readFileOrig} from 'fs';
 import {resolve as pathResolve, dirname} from 'path';
 import {promisify} from 'util';
-
+import {expect} from 'chai';
 import spawnPromise from './utilities/spawnPromise.js';
 
 const readFile = promisify(readFileOrig);
@@ -279,9 +279,9 @@ describe('CLI', function () {
         expect(stdout).to.include(expectedFile);
       });
       [
-        /\spath\s/u,
-        /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
-        /\/test\/fixtures\/cjs2\.cjs/u
+        /\spath\s/v,
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/v,
+        /\/test\/fixtures\/cjs2\.cjs/v
       ].forEach((unexpectedItem) => {
         expect(stdout).to.not.match(unexpectedItem);
       });
@@ -305,9 +305,9 @@ describe('CLI', function () {
         expect(stdout).to.include(expectedFile);
       });
       [
-        /\spath\s/u,
-        /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
-        /\/test\/fixtures\/cjs2\.cjs/u
+        /\spath\s/v,
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/v,
+        /\/test\/fixtures\/cjs2\.cjs/v
       ].forEach((unexpectedItem) => {
         expect(stdout).to.not.match(unexpectedItem);
       });
@@ -330,8 +330,8 @@ describe('CLI', function () {
         expect(stdout).to.not.include(expectedFile);
       });
       [
-        /\/test\/fixtures\/cjs-3rdparty\.cjs/u,
-        /\/test\/fixtures\/cjs2\.cjs/u
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/v,
+        /\/test\/fixtures\/cjs2\.cjs/v
       ].forEach((unexpectedItem) => {
         expect(stdout).to.match(unexpectedItem);
       });
@@ -346,17 +346,17 @@ describe('CLI', function () {
         '--file', './test/fixtures/cjs-3rdparty.cjs',
         '--node',
         '--cjs',
-        '--excludePathEntryExpression', 'node_modules|cjs2\\.cjs'
+        '--excludePathEntryExpression', String.raw`node_modules|cjs2\.cjs`
       ], 5000);
       expect(stderr).to.equal('');
       [
-        /node_modules/u,
-        /\/test\/fixtures\/cjs2\.cjs/u
+        /node_modules/v,
+        /\/test\/fixtures\/cjs2\.cjs/v
       ].forEach((expectedFile) => {
         expect(stdout).to.not.match(expectedFile);
       });
       [
-        /\/test\/fixtures\/cjs-3rdparty\.cjs/u
+        /\/test\/fixtures\/cjs-3rdparty\.cjs/v
       ].forEach((unexpectedItem) => {
         expect(stdout).to.match(unexpectedItem);
       });
@@ -421,7 +421,7 @@ describe('CLI', function () {
   );
 
   it(
-    'esFileTraverse binary (file) - cjs relying on default for type',
+    'esFileTraverse binary (file) - cjs relying on default for type (node)',
     async function () {
       const {stdout, stderr} = await spawnPromise(cliPath, [
         '--file', './test/fixtures/package-json-empty/cjs.cjs',

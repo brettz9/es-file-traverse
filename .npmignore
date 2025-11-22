@@ -6,3 +6,4 @@ mocha-multi-reporters.json
 .nyc_output
 .mocharc.js
 .eslintcache
+eslint.config.js
