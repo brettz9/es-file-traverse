@@ -1,8 +1,9 @@
 # CHANGES for `es-file-traverse`
 
-## 3.0.0 (unreleased)
+## 3.0.0
 
 - chore: bump Node 22 to 22.16.0+
+- chore: bump deps. and devDeps.; make babel/core a dep.; drop top-level-await plugin
 
 ## 2.0.1
 

@@ -1,4 +1,3 @@
-/* eslint-env node */
 /* globals module */
 
 require('./cjs3');
